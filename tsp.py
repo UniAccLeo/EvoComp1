@@ -9,14 +9,12 @@ class TSP :
         comment : str = None,
         type : str = None,
         dimension : str = None,
-        edgeWeightType : str = None,
         nodes : List[Tuple[int, int]] = None
     ) : 
         self.name = name
         self.comment = comment
         self.type = type
         self.dimension = dimension
-        self.edgeWeightType = edgeWeightType
         self.nodes = nodes
 
         matrix : List[List[float]] = [[0.0 for _ in range(int(dimension))] for _ in range(int(dimension))]
@@ -55,16 +53,34 @@ class TSP :
         comment = header.get("COMMENT")
         type = header.get("TYPE")
         dimension = header.get("DIMENSION")
-        edgeWeightType = header.get("EDGE_WEIGHT_TYPE")
         
         tsp = TSP(
             name,
             comment,
             type,
             dimension,
-            edgeWeightType,
             nodes
         )
 
         return tsp
-        
+    
+    def load_solution(self):
+        if(self.name == None) : return
+        with open(f"data/{self.name}.opt.tour", 'r', encoding='utf-8') as f:
+            data = f.read()
+        lines = [line.rstrip() for line in data.splitlines()]
+        is_tour_section = False
+        solution = []
+        for raw in lines:
+            line = raw.strip()
+            if not line :
+                continue
+            if not is_tour_section :
+                if line.startswith("TOUR_SECTION"):
+                    is_tour_section = True
+                continue
+            else :
+                if line.startswith("EOF"):
+                    break
+                solution.append(int(line))
+        return solution

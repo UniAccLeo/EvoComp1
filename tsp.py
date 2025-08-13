@@ -19,6 +19,14 @@ class TSP :
         self.edgeWeightType = edgeWeightType
         self.nodes = nodes
 
+        matrix : List[List[float]] = [[0.0 for _ in range(int(dimension))] for _ in range(int(dimension))]
+        for i, node in enumerate(nodes) :
+            for i2, node2 in enumerate(nodes[:i]):
+                distance = math.sqrt((node[0] - node2[0])**2 + (node[1] - node2[1])**2)
+                matrix[i][i2] = distance
+                matrix[i2][i] = distance
+        self.distance_matrix = matrix
+
     @classmethod
     def create_from_file(cls, filename : str) :
         with open(filename, 'r', encoding='utf-8') as f:
@@ -41,7 +49,7 @@ class TSP :
                 if line.startswith("EOF"):
                     break
                 line_coordinates = line.split()
-                nodes.append((line_coordinates[1], line_coordinates[2]))
+                nodes.append((int(line_coordinates[1]), int(line_coordinates[2])))
 
         name = header.get("NAME")
         comment = header.get("COMMENT")

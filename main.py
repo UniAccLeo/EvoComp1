@@ -13,6 +13,7 @@ def main():
     print(f"Dimension: {tsp.dimension}")
     print(f"Edge weight type: {tsp.edgeWeightType}")
     print(f"First 5 coordinates: {tsp.nodes[:5]}")
+    print(f"First 5 matrix inputs: {[row[:5] for row in tsp.distance_matrix[:5]]}")
 
 if __name__ == "__main__":
     main()

@@ -68,9 +68,7 @@ def run_local_search(tsp, neighbour_func, runs=30, seed=None):
 
 def run_experiments(output_file="results/local_search.txt"):
     instances = [
-        "eil51", "eil76", "eil101", "st70",
-        "kroa100", "kroc100", "krod100",
-        "lin105", "pcb442", "pr2392", "usa13509"
+        "pcb442", "pr2392", "usa13509"
     ]
      
     algorithms = {

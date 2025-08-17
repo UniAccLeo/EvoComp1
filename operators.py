@@ -132,27 +132,37 @@ class Operators:
             temp = pos1
             pos1 = pos2
             pos2 = temp
-
+        
+        print(pos1)
+        print(pos2)
         #loop over and add to hashmap
         for i in range(pos1, pos2+1):
             crossOver[tour1[i]] = tour2[i]
-            crossOver[tour2[i]] = tour1[i]
-
+        
         for i in range(0, size):
             node = tour2[i]
             if(i >= pos1 and i <=pos2):
                 continue
+
+            visited = set()
             while(node in crossOver):
+                if node in visited:
+                    break
+                visited.add(node)
                 node = crossOver[node]
 
             childTour[i] = node
 
         print(f"Parent1: {tour1}")
         print(f"Parent2: {tour2}")
-        print(f"Segment indices: {pos1}-{pos2}, Segment: {tour1[pos1:pos2+1]}")
-        print(f"Child: {childTour}\n")
+        print(f"Segment indices: {pos1}-{pos2}, Segment from Parent1: {tour1[pos1:pos2+1]}")
+        print(f"ChildTour: {childTour}\n")
         return childTour
         
+
+       #3: 7
+       #4: 8
+       #5: 1 
 
     # @staticmethod
     # def EdgeRecombination(tour1: List[int], tour2: List[int]) -> List[int]:
@@ -162,7 +172,6 @@ class Operators:
 def test_order_crossover():
     parent1 = [0, 1, 2, 3, 4, 5]
     parent2 = [5, 4, 3, 2, 1, 0]
-
     # Test 1: segment in middle
     Operators.OrderCrossover(parent1, parent2)
 
@@ -170,7 +179,6 @@ def test_order_crossover():
 def test_pmx():
     parent1 = [1, 2, 3, 4, 5, 6, 7, 8]
     parent2 = [5, 6, 7, 8, 1, 2, 3, 4]
-
     # Case 1: crossover segment [2, 5] (positions 2–5 inclusive)
     Operators.PMX(parent1, parent2)
 
@@ -193,10 +201,8 @@ def test_operators():
     for _ in range(5):
         new_tour = Operators.Inversion(original_tour)
         print(new_tour)
+
 if __name__ == "__main__":
     # test_operators()
-      # Example parents
-
-
-    
-
+    # Example parents
+    test_pmx()

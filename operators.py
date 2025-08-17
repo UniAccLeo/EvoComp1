@@ -77,7 +77,7 @@ class Operators:
     
             
     @staticmethod
-    def OrderCrossover(tour1: List[int], tour2: List[int]) -> List[int]:
+    def OrderCrossover(tour1: List[int], tour2: List[int]) -> List[int]: #run this two times for two children as you can cross over in both ways
         #create the random segment 
         childTour = tour1.copy()
         size = len(tour1)
@@ -108,21 +108,55 @@ class Operators:
             childTour[ptr] = tour2[t2ptr]
             ptr = ptr +1
             t2ptr = t2ptr + 1
-            
+
         print(f"Parent1: {tour1}")
         print(f"Parent2: {tour2}")
         print(f"Segment indices: {pos1}-{pos2}, Segment: {tour1[pos1:pos2+1]}")
         print(f"Child: {childTour}\n")
         return childTour
             
-                
+    
+    @staticmethod
+    def PMX(tour1: List[int], tour2: List[int]) -> List[int]:
+        #create the random segment 
+        childTour = tour1.copy()
+        crossOver = {}
+
+        size = len(tour1)
+        pos1 = random.randint(0, size-1)
+        pos2 = pos1
+        while(pos2 == pos1):
+            pos2 = random.randint(0, size-1)
+
+        if(pos1 > pos2):
+            temp = pos1
+            pos1 = pos2
+            pos2 = temp
+
+        #loop over and add to hashmap
+        for i in range(pos1, pos2+1):
+            crossOver[tour1[i]] = tour2[i]
+            crossOver[tour2[i]] = tour1[i]
+
+        for i in range(0, size):
+            node = tour2[i]
+            if(i >= pos1 and i <=pos2):
+                continue
+            while(node in crossOver):
+                node = crossOver[node]
+
+            childTour[i] = node
+
+        print(f"Parent1: {tour1}")
+        print(f"Parent2: {tour2}")
+        print(f"Segment indices: {pos1}-{pos2}, Segment: {tour1[pos1:pos2+1]}")
+        print(f"Child: {childTour}\n")
+        return childTour
         
 
     # @staticmethod
-    # def EdgeRecombination(tour1: List[int], tour2: List[int]) -> List[int]
+    # def EdgeRecombination(tour1: List[int], tour2: List[int]) -> List[int]:
     #     #create a hashmap: key: city, ans: combined neighbors of both parent
-        
-    
 
  
 def test_order_crossover():
@@ -131,6 +165,14 @@ def test_order_crossover():
 
     # Test 1: segment in middle
     Operators.OrderCrossover(parent1, parent2)
+
+
+def test_pmx():
+    parent1 = [1, 2, 3, 4, 5, 6, 7, 8]
+    parent2 = [5, 6, 7, 8, 1, 2, 3, 4]
+
+    # Case 1: crossover segment [2, 5] (positions 2–5 inclusive)
+    Operators.PMX(parent1, parent2)
 
 #testing
 def test_operators():
@@ -153,7 +195,7 @@ def test_operators():
         print(new_tour)
 if __name__ == "__main__":
     # test_operators()
-    test_order_crossover()
+      # Example parents
 
 
     

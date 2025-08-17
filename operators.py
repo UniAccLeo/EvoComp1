@@ -56,8 +56,24 @@ class Operators:
         return tour 
 
 
+    @staticmethod 
+    def Inversion(tour: List[int]) -> List[int]: 
+        tour = tour.copy()
 
-    
+        size = len(tour)
+        pos1 = random.randint(0, size-1)
+        pos2 = pos1
+        while(pos2 == pos1):
+            pos2 = random.randint(0, size-1)
+
+        if(pos1 > pos2):
+            temp = pos1
+            pos1 = pos2
+            pos2 = temp
+
+        tour[pos1:pos2+1] = tour[pos1:pos2+1][::-1]
+        print(f"Inversion: reversed indices {pos1} to {pos2} -> {tour}")
+        return tour
 
 #testing
 def test_operators():
@@ -74,6 +90,10 @@ def test_operators():
         new_tour = Operators.Swap(original_tour)
         print(new_tour)
 
+    print("\nInversion Swap:")
+    for _ in range(5):
+        new_tour = Operators.Inversion(original_tour)
+        print(new_tour)
 if __name__ == "__main__":
     test_operators()
 

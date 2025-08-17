@@ -11,12 +11,12 @@ In creating an evolutionary algorithm, the pseudo code for an evolutionary algor
 
 For TSP
 
-1. initialise population with random permutations of city indices (each perm = a tour) : 20, 50,100,200
+1. initialise population with random permutations of city indices (each perm = a tour) : 20, 50,100,200 (number of permutations)
 2. Evaluate each candidate solution by calculating the total tour length using city coordinates
 
 3. while( max generation -> 2000 for the exercise 6){
-    1. select parents: two tours using tournamet slection, roulette wheel
-    2. apply crossover on parent pairs
+    1. select parents: two tours using tournamet selection, roulette wheel
+    2. apply crossover on parent pairsas
     3. apply mutation to off spring
     4. evaluate offspring tour lengths
     5. select individuals for next generation  (keep best N solutions)

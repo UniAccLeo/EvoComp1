@@ -74,6 +74,63 @@ class Operators:
         tour[pos1:pos2+1] = tour[pos1:pos2+1][::-1]
         print(f"Inversion: reversed indices {pos1} to {pos2} -> {tour}")
         return tour
+    
+            
+    @staticmethod
+    def OrderCrossover(tour1: List[int], tour2: List[int]) -> List[int]:
+        #create the random segment 
+        childTour = tour1.copy()
+        size = len(tour1)
+        pos1 = random.randint(0, size-1)
+        pos2 = pos1
+        while(pos2 == pos1):
+            pos2 = random.randint(0, size-1)
+
+        if(pos1 > pos2):
+            temp = pos1
+            pos1 = pos2
+            pos2 = temp
+        #set to contain the segment
+        segment = set()
+        for i in range(pos1, pos2+1):
+            segment.add(tour1[i])
+        
+        ptr = 0
+        t2ptr = 0
+        while(ptr < size):
+            if(ptr >= pos1 and ptr <= pos2):
+                ptr = pos2+1
+                continue
+            if(tour2[t2ptr] in segment):
+                t2ptr = t2ptr + 1
+                continue
+            
+            childTour[ptr] = tour2[t2ptr]
+            ptr = ptr +1
+            t2ptr = t2ptr + 1
+            
+        print(f"Parent1: {tour1}")
+        print(f"Parent2: {tour2}")
+        print(f"Segment indices: {pos1}-{pos2}, Segment: {tour1[pos1:pos2+1]}")
+        print(f"Child: {childTour}\n")
+        return childTour
+            
+                
+        
+
+    # @staticmethod
+    # def EdgeRecombination(tour1: List[int], tour2: List[int]) -> List[int]
+    #     #create a hashmap: key: city, ans: combined neighbors of both parent
+        
+    
+
+ 
+def test_order_crossover():
+    parent1 = [0, 1, 2, 3, 4, 5]
+    parent2 = [5, 4, 3, 2, 1, 0]
+
+    # Test 1: segment in middle
+    Operators.OrderCrossover(parent1, parent2)
 
 #testing
 def test_operators():
@@ -95,12 +152,8 @@ def test_operators():
         new_tour = Operators.Inversion(original_tour)
         print(new_tour)
 if __name__ == "__main__":
-    test_operators()
-
-        
-    #@staticmethod
-
-    #def OrderCrossover(tour1: List[int], tour2: List[int]) -> List[int]
+    # test_operators()
+    test_order_crossover()
 
 
     

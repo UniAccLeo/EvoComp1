@@ -31,7 +31,7 @@ class TSP :
             data = f.read()
         lines = [line.rstrip() for line in data.splitlines()]
         header: Dict[str, str] = {}
-        nodes: List[Tuple[int,int]] = []
+        nodes: List[Tuple[float,float]] = []
         is_coord_section = False
         for raw in lines:
             line = raw.strip()
@@ -47,7 +47,7 @@ class TSP :
                 if line.startswith("EOF"):
                     break
                 line_coordinates = line.split()
-                nodes.append((int(line_coordinates[1]), int(line_coordinates[2])))
+                nodes.append((float(line_coordinates[1]), float(line_coordinates[2])))
 
         name = header.get("NAME")
         comment = header.get("COMMENT")

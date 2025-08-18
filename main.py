@@ -1,7 +1,7 @@
 from tsp import TSP
 from q2 import run_experiments
 def main():
-    problem = "usa13509" 
+    problem = "eil51" 
 
     try:
         tsp = TSP.create_from_file(f"data/{problem}.tsp")
@@ -15,7 +15,7 @@ def main():
     #print(f"First 5 matrix inputs: {[row[:5] for row in tsp.distance_matrix[:5]]}")
     print(f"First 5 nodes in solution: {tsp.load_solution()[:5]}")
 
-    #run_experiments()
+    run_experiments()
 
 if __name__ == "__main__":
     main()

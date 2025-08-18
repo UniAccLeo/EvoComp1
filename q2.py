@@ -1,143 +1,102 @@
 from tsp import TSP
 import statistics
-import random
+import random 
 
-
-# --- Utility: compute full tour cost (only needed for initial cost) ---
+#Calculate total tour_cost
 def tour_cost(tour, dist_matrix):
     cost = 0
     for i in range(len(tour)):
-        cost += dist_matrix[tour[i]][tour[(i + 1) % len(tour)]]
+        cost += dist_matrix[tour[i]][tour[(i+1) % len(tour)]]
     return cost
 
+#Find neighbours and costs
 
-# --- Delta-cost functions (O(1) updates) ---
-def jump_delta_cost(tour, dist_matrix, i, j):
+#Generate jump neighbours
+def jump_neighbour(tour, dist_matrix, current_cost):
     n = len(tour)
-    if i == j:
-        return 0
+    for i in range(n):
+        for j in range(n):
+            if i == j:
+                continue
+            new_tour = tour[:]
+            node = new_tour.pop(i)
+            new_tour.insert(j, node)
 
-    node = tour[i]
-    prev_i = tour[i - 1] if i > 0 else tour[-1]
-    next_i = tour[(i + 1) % n]
+            # compute delta cost
+            delta = 0
+        
+            i_prev, i_next = tour[i-1], tour[(i+1) % n]
+            delta -= dist_matrix[i_prev][tour[i]] + dist_matrix[tour[i]][i_next]
+            delta += dist_matrix[i_prev][i_next]
 
-    # remove node i
-    cost_before = dist_matrix[prev_i][node] + dist_matrix[node][next_i]
-    cost_after = dist_matrix[prev_i][next_i]
+            j_prev, j_next = new_tour[j-1], new_tour[(j+1) % n]
+            delta -= dist_matrix[j_prev][j_next]
+            delta += dist_matrix[j_prev][node] + dist_matrix[node][j_next]
 
-    # insertion cost
-    if j < i:
-        prev_j = tour[j - 1] if j > 0 else tour[-1]
-        next_j = tour[j]
-    else:
-        prev_j = tour[j]
-        next_j = tour[(j + 1) % n]
+            yield new_tour, current_cost + delta   
 
-    cost_before += dist_matrix[prev_j][next_j]
-    cost_after += dist_matrix[prev_j][node] + dist_matrix[node][next_j]
-
-    return cost_after - cost_before
-
-
-def exchange_delta_cost(tour, dist_matrix, i, j):
+#Generate exchange neighbours
+def exchange_neighbour(tour, dist_matrix, current_cost):
     n = len(tour)
-    if i == j:
-        return 0
+    for i in range(n):
+        for j in range(i+1, n):
+            new_tour = tour[:]
+            new_tour[i], new_tour[j] = new_tour[j], new_tour[i]
 
-    a, b = tour[i], tour[j]
-    a_prev, a_next = tour[i - 1 if i > 0 else n - 1], tour[(i + 1) % n]
-    b_prev, b_next = tour[j - 1 if j > 0 else n - 1], tour[(j + 1) % n]
+            # compute delta cost
+            delta = 0
+            for idx in [i, j]:
+                prev, nxt = new_tour[idx-1], new_tour[(idx+1) % n]
+                node = new_tour[idx]
+                delta += (dist_matrix[prev][node] + dist_matrix[node][nxt]) - \
+                         (dist_matrix[prev][tour[idx]] + dist_matrix[tour[idx]][nxt])
 
-    cost_before = dist_matrix[a_prev][a] + dist_matrix[a][a_next] \
-                + dist_matrix[b_prev][b] + dist_matrix[b][b_next]
+            yield new_tour, current_cost + delta
 
-    if j == i + 1:  # adjacent swap
-        cost_after = dist_matrix[a_prev][b] + dist_matrix[b][a] + dist_matrix[a][b_next]
-    else:
-        cost_after = dist_matrix[a_prev][b] + dist_matrix[b][a_next] \
-                   + dist_matrix[b_prev][a] + dist_matrix[a][b_next]
-
-    return cost_after - cost_before
-
-
-def two_opt_delta_cost(tour, dist_matrix, i, j):
+#Generate two opt neighbours
+def two_op_neighbour(tour, dist_matrix, current_cost):
     n = len(tour)
-    a, b = tour[i], tour[i + 1]
-    c, d = tour[j], tour[(j + 1) % n]
-    cost_before = dist_matrix[a][b] + dist_matrix[c][d]
-    cost_after = dist_matrix[a][c] + dist_matrix[b][d]
-    return cost_after - cost_before
+    for i in range(n - 1):
+        for j in range(i+2, n):
+            if j - i == 1:
+                continue
+            new_tour = tour[:i+1] + tour[i+1:j+1][::-1] + tour[j+1:]
 
+            #Calculate delta cost
+            delta = 0
+            delta -= dist_matrix[tour[i]][tour[i+1]] + dist_matrix[tour[j]][tour[(j+1) % n]]
+            delta += dist_matrix[tour[i]][tour[j]] + dist_matrix[tour[i+1]][tour[(j+1) % n]]
 
-# --- Local search with efficient updates ---
-def local_search(initial_tour, dist_matrix, move_type="2-opt"):
-    best = initial_tour[:]
-    best_cost = tour_cost(best, dist_matrix)
+            yield new_tour, current_cost + delta
 
-    improved = True
-    while improved:
-        improved = False
-        n = len(best)
+# Local Search
+def local_search(initial_tour, dist_matrix, neighbour_func):
+    best = initial_tour
+    best_cost = tour_cost(initial_tour, dist_matrix)
 
-        if move_type == "jump":
-            for i in range(n):
-                for j in range(n):
-                    if i == j:
-                        continue
-                    delta = jump_delta_cost(best, dist_matrix, i, j)
-                    if delta < 0:
-                        node = best.pop(i)
-                        best.insert(j, node)
-                        best_cost += delta
-                        improved = True
-                        break
-                if improved:
-                    break
-
-        elif move_type == "exchange":
-            for i in range(n):
-                for j in range(i + 1, n):
-                    delta = exchange_delta_cost(best, dist_matrix, i, j)
-                    if delta < 0:
-                        best[i], best[j] = best[j], best[i]
-                        best_cost += delta
-                        improved = True
-                        break
-                if improved:
-                    break
-
-        elif move_type == "2-opt":
-            for i in range(n - 1):
-                for j in range(i + 2, n - 1):
-                    if j - i == 1:
-                        continue
-                    delta = two_opt_delta_cost(best, dist_matrix, i, j)
-                    if delta < 0:
-                        best[i + 1:j + 1] = reversed(best[i + 1:j + 1])
-                        best_cost += delta
-                        improved = True
-                        break
-                if improved:
-                    break
-
+    terminate = False
+    #Keep on iterating until no improvements can be made
+    while not terminate:
+        terminate = True
+        for n, cost in neighbour_func(best, dist_matrix, best_cost):
+            if cost < best_cost:
+                best = n
+                best_cost = cost
+                terminate = False
+                break
     return best, best_cost
 
-
-# --- Multiple runs for statistics ---
-def run_local_search(tsp, move_type, runs=30, seed=None):
+def run_local_search(tsp, neighbour_func, runs=30, seed=None):
     if seed is not None:
         random.seed(seed)
     results = []
     for _ in range(runs):
-        print("instance1")
         init_tour = list(range(int(tsp.dimension)))
         random.shuffle(init_tour)
-        _, cost = local_search(init_tour, tsp.distance_matrix, move_type)
+        _, cost = local_search(init_tour, tsp.distance_matrix, neighbour_func)
         results.append(cost)
     return min(results), statistics.mean(results)
 
-
-# --- Experiment runner ---
 def run_experiments(output_file="results/local_search.txt"):
     instances = [
         "eil51", "eil76", "eil101", "st70",
@@ -162,7 +121,7 @@ def run_experiments(output_file="results/local_search.txt"):
             f.write(f"Instance: {instance}\n")
             print(f"Running {instance}...")
 
-            for name in algorithms:
-                min_cost, mean_cost = run_local_search(tsp, name, runs=30)
+            for name, func in algorithms.items():
+                min_cost, mean_cost = run_local_search(tsp, func, runs=1)
                 f.write(f"  {name}: min={min_cost:.2f}, mean={mean_cost:.2f}\n")
             f.write("\n")

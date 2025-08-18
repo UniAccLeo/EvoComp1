@@ -1,40 +1,46 @@
 Instance: eil51
-  jump: min=442.97, mean=479.27
-  exchange: min=507.96, mean=564.78
-  2-opt: min=433.96, mean=450.50
+  jump: min=473.15, mean=473.15
+  exchange: min=554.62, mean=554.62
+  2-opt: min=443.28, mean=443.28
 
 Instance: eil76
-  jump: min=574.62, mean=630.72
-  exchange: min=675.43, mean=743.60
-  2-opt: min=562.63, mean=577.44
+  jump: min=631.68, mean=631.68
+  exchange: min=798.41, mean=798.41
+  2-opt: min=581.92, mean=581.92
 
 Instance: eil101
-  jump: min=699.67, mean=740.25
-  exchange: min=816.60, mean=919.56
-  2-opt: min=664.90, mean=681.43
+  jump: min=732.20, mean=732.20
+  exchange: min=888.01, mean=888.01
+  2-opt: min=693.21, mean=693.21
 
 Instance: st70
-  jump: min=742.27, mean=851.66
-  exchange: min=860.63, mean=1041.83
-  2-opt: min=691.09, mean=712.24
+  jump: min=912.09, mean=912.09
+  exchange: min=1109.27, mean=1109.27
+  2-opt: min=704.11, mean=704.11
 
 Instance: kroa100
-  jump: min=24376.75, mean=29283.34
-  exchange: min=32817.07, mean=39377.88
-  2-opt: min=21580.11, mean=22322.21
+  jump: min=26980.95, mean=26980.95
+  exchange: min=45981.92, mean=45981.92
+  2-opt: min=23845.44, mean=23845.44
 
 Instance: kroc100
-  jump: min=24558.23, mean=28506.73
-  exchange: min=29405.05, mean=37424.73
-  2-opt: min=21271.22, mean=22020.73
+  jump: min=26672.38, mean=26672.38
+  exchange: min=41944.34, mean=41944.34
+  2-opt: min=22842.84, mean=22842.84
 
 Instance: krod100
-  jump: min=25394.16, mean=29543.04
-  exchange: min=32107.18, mean=37844.22
-  2-opt: min=21638.55, mean=22695.00
+  jump: min=30987.15, mean=30987.15
+  exchange: min=40298.73, mean=40298.73
+  2-opt: min=22974.02, mean=22974.02
 
 Instance: lin105
-  jump: min=16512.98, mean=19494.43
-  exchange: min=23998.92, mean=27483.45
-  2-opt: min=14416.65, mean=15282.91
+  jump: min=17108.24, mean=17108.24
+  exchange: min=22419.45, mean=22419.45
+  2-opt: min=15389.42, mean=15389.42
 
+Instance: pcb442
+  jump: min=66828.75, mean=66828.75
+  exchange: min=118729.58, mean=118729.58
+  2-opt: min=55301.96, mean=55301.96
+
+Instance: pr2392

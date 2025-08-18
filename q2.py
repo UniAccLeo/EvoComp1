@@ -139,8 +139,17 @@ def run_local_search(tsp, move_type, runs=30, seed=None):
 
 # --- Experiment runner ---
 def run_experiments(output_file="results/local_search.txt"):
-    instances = ["eil51", "pcb442", "pr2392", "usa13509"]
-    algorithms = ["jump", "exchange", "2-opt"]
+    instances = [
+        "eil51", "eil76", "eil101", "st70",
+        "kroa100", "kroc100", "krod100",
+        "lin105", "pcb442", "pr2392", "usa13509"
+    ]
+     
+    algorithms = {
+        "jump": jump_neighbour,
+        "exchange": exchange_neighbour,
+        "2-opt": two_op_neighbour
+    }
 
     with open(output_file, "w") as f:
         for instance in instances:

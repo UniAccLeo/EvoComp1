@@ -12,7 +12,7 @@ def main():
     print(f"Loaded problem: {tsp.name}")
     print(f"Dimension: {tsp.dimension}")
     print(f"First 5 coordinates: {tsp.nodes[:5]}")
-    print(f"First 5 matrix inputs: {[row[:5] for row in tsp.distance_matrix[:5]]}")
+    #print(f"First 5 matrix inputs: {[row[:5] for row in tsp.distance_matrix[:5]]}")
     print(f"First 5 nodes in solution: {tsp.load_solution()[:5]}")
 
     run_experiments()

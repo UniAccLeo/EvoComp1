@@ -1,0 +1,29 @@
+# q5.py
+import random
+from typing import List
+
+def fitness_proportional(population: List, k: int = 1):
+    total_fitness = sum(ind.fitness for ind in population)
+    if total_fitness == 0:
+        return random.sample(population, k)
+    selected = []
+    for _ in range(k):
+        r = random.uniform(0, total_fitness)
+        s = 0.0
+        for ind in population:
+            s += ind.fitness
+            if s >= r:
+                selected.append(ind)
+                break
+    return selected
+
+def tournament(population: List, k: int = 1, t_size: int = 3):
+    selected = []
+    for _ in range(k):
+        competitors = random.sample(population, t_size)
+        best = max(competitors, key=lambda ind: ind.fitness)
+        selected.append(best)
+    return selected
+
+def elitism(population: List, elite_size: int = 1):
+    return sorted(population, key=lambda ind: ind.fitness, reverse=True)[:elite_size]

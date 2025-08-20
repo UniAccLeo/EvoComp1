@@ -14,7 +14,11 @@ def main():
             results = []
             try:
                 tsp = TSP.create_from_file(f"data/{problem}.tsp")
-                for _ in range (30):
+                print(f"\nSolving problem: {problem}") 
+
+                for i in range (30):
+                    print(f"  Run {i+1}/30...", end='\r')
+
                     best_route, _ = inver_over(tsp)
                     best_route_cost = tsp.calculate_route_cost(best_route)
                     results.append(best_route_cost)
@@ -29,7 +33,7 @@ def main():
             f.write(f"mean: {mean}\n")
             f.write(f"stdev: {stdev}\n\n")
 
-
+    print("\nAll tests completed.")
 
 if __name__ == "__main__":
     main()

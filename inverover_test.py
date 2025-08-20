@@ -4,7 +4,11 @@ import os
 
 def main():
     problems = ["eil51", "eil76", "eil101", "st70", "kroa100",
-    "kroc100", "krod100", "lin105", "pcb442", "pr2392", "usa13509"] 
+    "kroc100", "krod100", "lin105", "pcb442", "pr2392", "usa13509"]
+
+    os.makedirs('results', exist_ok=True)
+    path = os.path.join('results', 'inverover_test_1.txt')
+
     with open(path, 'w') as f:
         for problem in problems :
             results = []
@@ -20,9 +24,6 @@ def main():
             
             mean = sum(results) / len(results)
             stdev = (sum((x - mean) ** 2 for x in results) / len(results)) ** 0.5
-
-            os.makedirs('results', exist_ok=True)
-            path = os.path.join('results', 'inverover_test_1.txt')
             
             f.write(f"results for {tsp.name}:\n")
             f.write(f"mean: {mean}\n")

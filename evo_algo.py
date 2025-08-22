@@ -25,11 +25,25 @@ class Algorithm:
         #select the two parents
         while(CurrGen < generations):
             parents = Selection.tournament(pop.individuals, 2, 3)
-
             #perform crossover 
-            Op.OrderCrossover(parents)
+            children = []
+            children.append(Op.OrderCrossover(parents[0], parents[1]))
+            children.append(Op.OrderCrossover(parents[1], parents[0]))
+            #perform mutation on the child & find the legnth of each child
+            for child in children:
+                temp = Individual(tsp)
+                child = Op.Inversion(child)
+                temp.permutation = child
+                temp.evaluate()#sould find the distance 
+                pop.individuals.append(temp)
 
-            #perform mutation on the child
+            #keep best n solution
+            
+                
+                
+            
+
+        
 
             
 

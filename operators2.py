@@ -249,7 +249,7 @@ def test_order_crossover():
     parent1 = [0, 1, 2, 3, 4, 5]
     parent2 = [5, 4, 3, 2, 1, 0]
     # Test 1: segment in middle
-    Operators.OrderCrossover(parent1, parent2)
+    Operators2.OrderCrossover(parent1, parent2)
 
 def test_edge_recombination():
     cases = [
@@ -262,7 +262,7 @@ def test_edge_recombination():
 
     for i in range(1, len(cases) + 1):
         p1, p2 = cases[i - 1]
-        child = Operators.EdgeRecombination(p1, p2)
+        child = Operators2.EdgeRecombination(p1, p2)
         print(f"Case {i}:")
         print(" Parent1:", p1)
         print(" Parent2:", p2)
@@ -272,7 +272,7 @@ def test_cycle_crossover():
     parent1 = [1, 2, 3, 4, 5, 6, 7, 8]
     parent2 = [5, 6, 7, 8, 1, 2, 3, 4]
 
-    child = Operators.CycleCrossover(parent1, parent2)
+    child = Operators2.CycleCrossover(parent1, parent2)
 
     print("Parent1:", parent1)
     print("Parent2:", parent2)
@@ -282,7 +282,7 @@ def test_pmx():
     parent1 = [1, 2, 3, 4, 5, 6, 7, 8]
     parent2 = [5, 6, 7, 8, 1, 2, 3, 4]
     # Case 1: crossover segment [2, 5] (positions 2–5 inclusive)
-    Operators.PMX(parent1, parent2)
+    Operators2.PMX(parent1, parent2)
 
 #testing
 def test_operators():
@@ -291,17 +291,17 @@ def test_operators():
 
     print("\nTesting Insert:")
     for _ in range(5):
-        new_tour = Operators.Insert(original_tour)
+        new_tour = Operators2.Insert(original_tour)
         print(new_tour)
 
     print("\nTesting Swap:")
     for _ in range(5):
-        new_tour = Operators.Swap(original_tour)
+        new_tour = Operators2.Swap(original_tour)
         print(new_tour)
 
     print("\nInversion Swap:")
     for _ in range(5):
-        new_tour = Operators.Inversion(original_tour)
+        new_tour = Operators2.Inversion(original_tour)
         print(new_tour)
 
 if __name__ == "__main__":

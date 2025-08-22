@@ -20,7 +20,7 @@ class Selection:
         return selected
 
     @staticmethod
-    def tournament(population: List, k: int = 1, t_size: int = 3):
+    def tournament(population: List, k: int = 1, t_size: int = 3): #population list, number of individuals to select, tournament size
         selected = []
         for _ in range(k):
             competitors = random.sample(population, t_size)
@@ -31,3 +31,4 @@ class Selection:
     @staticmethod
     def elitism(population: List, elite_size: int = 1):
         return sorted(population, key=lambda ind: ind.fitness, reverse=True)[:elite_size]
+    

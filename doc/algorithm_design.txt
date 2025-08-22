@@ -32,10 +32,18 @@ For TSP
 
 
 Design 1
-- 
+- tournament selection is chosen as it is 
+- inversion
+- OX cross over : recombines parents whiel preserving valid tours and useful sub tours
+OX crossover works well with ivnersion as it 
+allows or algorithm to exploit good solutions using crossover while exploring new solutions still using mutation guided by firness drive selection.
+
 
 Design 2 
--
+- tournament
+- PMX
+- light mutation : swap
 
 Design 3
--
+- fitness proportional
+- 

@@ -4,18 +4,19 @@ from typing import List
 
 class Selection:
     @staticmethod
-    def fitness_proportional(population: List, k: int = 1): #need to fix as its returning the wrong ones.
-        total_fitness = sum(ind.fitness for ind in population)
-        if total_fitness == 0:
-            return random.sample(population, k)
+    def fitness_proportional(population: List, k: int = 1): 
+        fitnessVal = []
+        for tour in population:
+            fitnessVal.append(1/tour.fitness) #find the inverse value since u want the larger fitness values to be worse as fitness = distance 
+        totalfitness = sum(fitnessVal)
         selected = []
         for _ in range(k):
-            r = random.uniform(0, total_fitness)
+            r = random.uniform(0, totalfitness)
             s = 0.0
-            for ind in population:
-                s += ind.fitness
+            for i in range(len(population)):
+                s += fitnessVal[i]
                 if s >= r:
-                    selected.append(ind)
+                    selected.append(population[i])
                     break
         return selected
 

@@ -59,7 +59,7 @@ class Algorithm:
             ind.evaluate()
 
         while(CurrGen < generations):
-            print(CurrGen)
+            #print(CurrGen)
             children = []
             while(len(children) < pop.size):
                 parents = Selection.tournament(pop.individuals, 2, 5) #picks two parents, from a tournament size of 5 migh tneed to adjust
@@ -81,7 +81,18 @@ class Algorithm:
         return pop
             
     @staticmethod 
-    def GA3():
+    def GA3(population_size: int, tspFile: TSP, generations: int):
+        tsp = tspFile
+        pop = Population(population_size, tsp)
+        Op = Operators
+        pop.initialize()
+        CurrGen = 0 
+        for ind in pop.individuals:
+            ind.evaluate()
+
+        while(CurrGen < generations):
+        #keep the best child Eliticism 
+
         
         
 

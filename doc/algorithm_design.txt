@@ -36,11 +36,8 @@ worst individual every team which means number of iterations would be much large
 
 
 GA design3:
-
-- Edge recombination + insert mutation
-- 
-- light mutation : swap
-
-Design 3
-- fitness proportional
-- 
+For this third algorithm I tried something a lot more different to 1 and 2. I decided to make a slower convergence using the fitness proportion selection 
+for the parents. Im using a cycle crossover and a swap mutation with the idea that cycle crossover keeps cities in their absolute positions from parents and swap mutation similarly 
+gently explores nearby arrangments of the tour. Unlike Design2 thisalgirihtm is less prone to premature convergence which means maints a higher dviersity throughout the run. 
+In terms of the replacement strategy, since its a lot slower, a generational replacement makes sense here as it allows the diversity maintained by FPS to persits 
+longer

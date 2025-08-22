@@ -24,7 +24,7 @@ class Operators:
                 temp = tour[i]
                 tour[i] = tour[i-1]
                 tour[i-1] = temp
-        print(f"Insert: moved element from index {start} to {end} -> {tour}")
+        #print(f"Insert: moved element from index {start} to {end} -> {tour}")
         return tour
                 
     #algorihtm design for insert (kinda like bubbles sort)
@@ -52,7 +52,7 @@ class Operators:
         temp = tour[pos1]
         tour[pos1] = tour[pos2]
         tour[pos2] = temp
-        print(f"Swap: swapped indices {pos1} and {pos2} -> {tour}")
+        #print(f"Swap: swapped indices {pos1} and {pos2} -> {tour}")
         return tour 
 
 
@@ -72,7 +72,7 @@ class Operators:
             pos2 = temp
 
         tour[pos1:pos2+1] = tour[pos1:pos2+1][::-1]
-        print(f"Inversion: reversed indices {pos1} to {pos2} -> {tour}")
+        #print(f"Inversion: reversed indices {pos1} to {pos2} -> {tour}")
         return tour
     
             
@@ -109,10 +109,10 @@ class Operators:
             ptr = ptr +1
             t2ptr = t2ptr + 1
 
-        print(f"Parent1: {tour1}")
-        print(f"Parent2: {tour2}")
-        print(f"Segment indices: {pos1}-{pos2}, Segment: {tour1[pos1:pos2+1]}")
-        print(f"Child: {childTour}\n")
+        # print(f"Parent1: {tour1}")
+        # print(f"Parent2: {tour2}")
+        # print(f"Segment indices: {pos1}-{pos2}, Segment: {tour1[pos1:pos2+1]}")
+        # print(f"Child: {childTour}\n")
         return childTour
             
     
@@ -159,15 +159,95 @@ class Operators:
         print(f"ChildTour: {childTour}\n")
         return childTour
         
-
        #3: 7
        #4: 8
        #5: 1 
 
-    # @staticmethod
-    # def EdgeRecombination(tour1: List[int], tour2: List[int]) -> List[int]:
-    #     #create a hashmap: key: city, ans: combined neighbors of both parent
 
+    #------------------------------ Mark Section --------------------------------------------------
+
+    @staticmethod
+    def EdgeRecombination(tour1: List[int], tour2: List[int]) -> List[int]:
+        #create a hashmap: key: city, ans: combined neighbors of both parent
+        t1 = tour1.copy()
+        t2 = tour2.copy()
+        size = len(t1)
+        # build adjacency sets: for each city, add both neighbors from both parents
+        adj = {city: set() for city in t1}
+        for p in (t1, t2):
+            for i in range(len(p)):
+                city = p[i]
+                left = p[(i - 1) % size]
+                right = p[(i + 1) % size]
+                adj[city].add(left)
+                adj[city].add(right)
+
+        child: List[int] = []
+        unused = set(t1)
+
+        # start from a random city taken from parent1 (consistent with many ERX variants)
+        current = random.choice(t1)
+        #print(current)
+
+        while len(child) < size:
+            child.append(current)
+            unused.discard(current)
+
+            # remove 'current' from all adjacency sets (so counts reflect remaining choices)
+            for s in adj.values():
+                s.discard(current)
+
+            # find neighbors of current that are still unused
+            neighbors = [v for v in adj[current] if v in unused]
+            if neighbors:
+                # choose neighbor with smallest adjacency set (min remaining edges)
+                min_size = min(len(adj[n]) for n in neighbors)
+                candidates = [n for n in neighbors if len(adj[n]) == min_size]
+                next_city = random.choice(candidates)
+            else:
+                # no usable neighbor => pick random unused city
+                if unused:
+                    next_city = random.choice(list(unused))
+                else:
+                    break  # finished
+            current = next_city
+
+        # safety: if anything left, append them
+        if len(child) < size:
+            for v in list(unused):
+                child.append(v)
+
+        return child
+
+    @staticmethod
+    def CycleCrossover(tour1: List[int], tour2: List[int]) -> List[int]:
+        """
+        Cycle Crossover (CX).
+        Returns a single child by alternating cycles between parents.
+        """
+        size = len(tour1)
+        child = [-1] * size
+        visited = [False] * size
+        cycle = 0
+
+        while not all(visited):
+            # find first index not visited yet
+            start = next(i for i, v in enumerate(visited) if not v)
+            idx = start
+            # follow cycle
+            while not visited[idx]:
+                visited[idx] = True
+                if cycle % 2 == 0:
+                    child[idx] = tour1[idx]
+                else:
+                    child[idx] = tour2[idx]
+                # move to position in P1 where p2[idx] occurs
+                idx = tour1.index(tour2[idx])
+            cycle += 1
+
+        return child
+    
+    # -------------------------------------------------------------------------------------------------------
  
 def test_order_crossover():
     parent1 = [0, 1, 2, 3, 4, 5]

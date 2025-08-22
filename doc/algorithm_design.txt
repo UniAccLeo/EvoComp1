@@ -1,19 +1,6 @@
-In creating an evolutionary algorithm, the pseudo code for an evolutionary algorithm is detailed below:
-
-1. initialise population with random candidate solutions;
-2. evaluate each candidate
-3. Repeat until Terminiation condition is satisfied do:
-4. 
-- select parents
-- Recombine pairs of parentsmutate the resulting offspring
-- evaluate new candidates
-- select individuals for the next generation
-
-For TSP
-
+For TSP design of the algorithm
 1. initialise population with random permutations of city indices (each perm = a tour) : 20, 50,100,200 (number of permutations)
 2. Evaluate each candidate solution by calculating the total tour length using city coordinates
-
 3. while( max generation -> 2000 for the exercise 6){
     1. select parents: two tours using tournamet selection, roulette wheel
     2. apply crossover on parent pairsas
@@ -27,21 +14,31 @@ For TSP
     2. steady-state replacement: insert offspring into the population by replacing some fo the worse individuals (this oneis better)
     e.g population 50: two parents have two children soo populuation = 52. pick the best 50 to survive and then repeat..... using a priotity queue
 }     
-
 4. pick the best tour in the final population.
 
 
-Design 1
-- tournament selection is chosen as it is 
-- inversion
-- OX cross over : recombines parents whiel preserving valid tours and useful sub tours
-OX crossover works well with ivnersion as it 
-allows or algorithm to exploit good solutions using crossover while exploring new solutions still using mutation guided by firness drive selection.
+Genetic algorihtm (GA) design 1
+for my first genetic algorithm, I decided to use tournament selection for parent selection with a tournament size of 5 as 
+it works well with raw fitness values and preserves diversity, which is important in finding new better tours. 5 was chosen as it creates a decently high 
+selection pressure given the population sizes. I decided to implement order-crossover and inversion mutation combined together as it allows the algorihtm too exploit 
+the good solutions using crossover(maintains the good sequences - small change) while exploring new solutions using inversion, which is a drastic
+change to the tour. I used a generation replacement with strong elitism, again to maintain diversity, which would be important for when u run the 
+algorithm for many more generations. ( (μ + λ) selection)
 
 
-Design 2 
-- tournament
-- PMX
+GA Design 2 
+For the second algorithm, I decided to change the crosover and mutation algorithm with ERX and insert mutation. 
+ERX mutation is a really good exploiter for graph problems and therefore needs a diverse range of parents to combine, so 
+using FPS which frequently picks the same winner/random winner is inefficient. Thus tournament parent selection is used instead.
+Insert mutation was used as it is medium to high level of exploratiuon which is sufficient in providing small incremental improvement. Perhaps 
+making it even better the longer the generations run. I'm using generational replacement as its sufficient compard to steady state where it replaces the 
+worst individual every team which means number of iterations would be much larger.
+
+
+GA design3:
+
+- Edge recombination + insert mutation
+- 
 - light mutation : swap
 
 Design 3

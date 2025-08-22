@@ -25,6 +25,7 @@ class TSP :
                 matrix[i2][i] = distance
         self.distance_matrix = matrix
 
+
     @classmethod
     def create_from_file(cls, filename : str) :
         with open(filename, 'r', encoding='utf-8') as f:

@@ -5,13 +5,14 @@ from selection import Selection
 from population_rep import Population, Individual
 from operators2 import Operators2   
 import heapq
+import random
 
 class Algorithm:
 
     @staticmethod
     def GA1(population_size: int, tspFile: TSP, generations: int):
         #algorithm 1 using OX and inversion 
-        tsp = TSP.create_from_file(tspFile)
+        tsp = tspFile
         #load the population
         pop = Population(population_size, tsp)
         #instantiate instance of operator class
@@ -21,66 +22,112 @@ class Algorithm:
         pop.initialize()
         for ind in pop.individuals:
             ind.evaluate()
-
         #select the two parents
         while(CurrGen < generations):
-            parents = Selection.tournament(pop.individuals, 2, 3)
-            #perform crossover 
+            #print(CurrGen) --> for debugging 
             children = []
-            children.append(Op.OrderCrossover(parents[0], parents[1]))
-            children.append(Op.OrderCrossover(parents[1], parents[0]))
-            #perform mutation on the child & find the legnth of each child
-            for child in children:
+            while(len(children) < pop.size):
+                parents = Selection.tournament(pop.individuals, 2, 5) #picks two parents, from a tournament size of 5 migh tneed to adjust
+                #perform crossover 
+                children_pair = [
+                    Op.OrderCrossover(parents[0].permutation, parents[1].permutation),
+                    Op.OrderCrossover(parents[1].permutation, parents[0].permutation)
+                ]
+                #perform mutation on both children & find the legnth of each child
+                for child in children_pair:
+                    temp = Individual(tsp)
+                    child = Op.Inversion(child)
+                    temp.permutation = child
+                    temp.evaluate()#sould find the distance 
+                    children.append(temp)
+            #keep best population_size solution
+            pop.individuals.extend(children)
+            pop.individuals.sort(key = lambda ind: ind.fitness)
+            pop.individuals = pop.individuals[:pop.size]
+            CurrGen = CurrGen + 1
+        
+        return pop
+    
+    @staticmethod
+    def GA2(population_size: int, tspFile: TSP, generations: int):
+        tsp = tspFile
+        pop = Population(population_size, tsp)
+        Op = Operators
+        pop.initialize()
+        CurrGen = 0 
+        for ind in pop.individuals:
+            ind.evaluate()
+
+        while(CurrGen < generations):
+            print(CurrGen)
+            children = []
+            while(len(children) < pop.size):
+                parents = Selection.tournament(pop.individuals, 2, 5) #picks two parents, from a tournament size of 5 migh tneed to adjust
+                #perform crossover 
+                child = Op.EdgeRecombination(parents[0].permutation, parents[1].permutation)
+                #perform mutation on child
+                if random.random() < 0.3:
+                    child = Op.Insert(child)
                 temp = Individual(tsp)
-                child = Op.Inversion(child)
                 temp.permutation = child
                 temp.evaluate()#sould find the distance 
-                pop.individuals.append(temp)
+                children.append(temp)
+            #keep best population_size solution
+            pop.individuals.extend(children)
+            pop.individuals.sort(key = lambda ind: ind.fitness)
+            pop.individuals = pop.individuals[:pop.size]
+            CurrGen = CurrGen + 1
+        
+        return pop
+            
+    @staticmethod 
+    def GA3():
+        
+        
 
-            #keep best n solution
-            
-                
-                
-            
+
+
+
 
         
 
-            
 
-
-
-
-        
-
-# if __name__ == "__main__":
-#     Algoritham.GA1()  # run the GA1 setup
-
-#     # Example test: check population size
-#     tsp = TSP.create_from_file("data/eil101.tsp")
-#     pop = Population(20, tsp)
-#     pop.initialize()
-#     assert len(pop.individuals) == 20, "Population size should be 20"
-
-#     # Test: fitness is evaluated and positive
-#     for ind in pop.individuals:
-#         dist = ind.evaluate()
-#         assert dist > 0, f"Distance should be positive, got {dist}"
     
-#     # Test: priority queue ordering
-#     pq = []
-#     for ind in pop.individuals:
-#         heapq.heappush(pq, (ind.fitness, ind))
-
-#     # Pop all elements from heap and check order
-#     last_fitness = -1
-#     while pq:
-#         fitness, ind = heapq.heappop(pq)
-#         print(f"Tour distance: {fitness}")
-#         assert last_fitness <= fitness, "Heap order incorrect"
-#         last_fitness = fitness
-
-#     print("All tests passed!")
-
-
             
+              
+
+def testAlgo():
+    populationSize = 200
+    generationSize = 20000
+    tsp_file = "data/eil51.tsp"
+
+    tsp = TSP.create_from_file(tsp_file)
+
+    result_pop = Algorithm.GA1(populationSize, tsp, generationSize)
+
+    # Get final best individual
+    best_individual = result_pop.best_individual()
+    print(f"Best tour length: {best_individual.fitness}")
+    print(f"Best tour: {best_individual.permutation}")
+    
+    return result_pop
+
+def testAlgo2():
+    populationSize = 200
+    generationSize = 2000
+    tsp_file = "data/eil51.tsp"
+
+    tsp = TSP.create_from_file(tsp_file)
+
+    result_pop = Algorithm.GA2(populationSize, tsp, generationSize)
+
+    # Get final best individual
+    best_individual = result_pop.individuals[0]  # Population is already sorted
+    print(f"GA2 - Best tour length: {best_individual.fitness}")
+    print(f"GA2 - Best tour: {best_individual.permutation}")
+    
+    return result_pop
+
+if __name__ == "__main__":
+    testAlgo2()
 

@@ -4,7 +4,7 @@ from typing import List
 
 class Selection:
     @staticmethod
-    def fitness_proportional(population: List, k: int = 1):
+    def fitness_proportional(population: List, k: int = 1): #need to fix as its returning the wrong ones.
         total_fitness = sum(ind.fitness for ind in population)
         if total_fitness == 0:
             return random.sample(population, k)

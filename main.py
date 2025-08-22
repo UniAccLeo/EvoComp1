@@ -1,5 +1,5 @@
 from tsp import TSP
-from q2 import run_experiments
+from q2 import run_all_local_search
 def main():
     problem = "eil51" 
 
@@ -15,7 +15,7 @@ def main():
     #print(f"First 5 matrix inputs: {[row[:5] for row in tsp.distance_matrix[:5]]}")
     print(f"First 5 nodes in solution: {tsp.load_solution()[:5]}")
 
-    run_experiments()
+    run_all_local_search()
 
 if __name__ == "__main__":
     main()

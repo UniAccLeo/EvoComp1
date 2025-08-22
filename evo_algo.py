@@ -91,21 +91,37 @@ class Algorithm:
             ind.evaluate()
 
         while(CurrGen < generations):
-        #keep the best child Eliticism 
+            children = []
 
-        
-        
-
-
-
-
-
-        
+            bestChild = pop.best_individual() #bestChild is a reference
+            tempElite = Individual(tsp)
+            tempElite.permutation = bestChild.permutation.copy()
+            tempElite.evaluate()
+            children.append(tempElite)
 
 
-    
-            
-              
+            while(len(children) < pop.size):
+                #FPS
+                parents= Selection.fitness_proportional(pop.individuals, 2)
+                
+                #cycle crossover
+                childPerm = Op.CycleCrossover(parents[0].permutation, parents[1].permutation)
+                
+                #swap mutation 
+                if(random.random() < 0.3):
+                    childPerm = Op.Swap(childPerm)
+
+                 # Create and evaluate child
+                childInd = Individual(tsp)
+                childInd.permutation = childPerm 
+                childInd.evaluate()
+                children.append(childInd)
+        #generational replacement
+            pop.individuals = children
+            CurrGen = CurrGen + 1
+
+        return pop
+       
 
 def testAlgo():
     populationSize = 200
@@ -139,6 +155,22 @@ def testAlgo2():
     
     return result_pop
 
+def testAlgo3():
+    populationSize = 200
+    generationSize = 2000
+    tsp_file = "data/eil51.tsp"
+
+    tsp = TSP.create_from_file(tsp_file)
+
+    result_pop = Algorithm.GA3(populationSize, tsp, generationSize)
+
+    # Get final best individual
+    best_individual = result_pop.individuals[0]  # Population is already sorted
+    print(f"GA3 - Best tour length: {best_individual.fitness}")
+    print(f"GA3 - Best tour: {best_individual.permutation}")
+    
+    return result_pop
+
 if __name__ == "__main__":
-    testAlgo2()
+    testAlgo3()
 

@@ -2,7 +2,7 @@
 from typing import List
 import random
 
-class Operators:
+class Operators2:
     #mutation operators : for one tour
     @staticmethod 
     def Insert(tour: List[int]) -> List[int]: 

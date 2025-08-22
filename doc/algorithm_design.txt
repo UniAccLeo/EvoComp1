@@ -29,3 +29,13 @@ For TSP
 }     
 
 4. pick the best tour in the final population.
+
+
+Design 1
+- 
+
+Design 2 
+-
+
+Design 3
+-

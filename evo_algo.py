@@ -99,18 +99,14 @@ class Algorithm:
             tempElite.evaluate()
             children.append(tempElite)
 
-
             while(len(children) < pop.size):
                 #FPS
                 parents= Selection.fitness_proportional(pop.individuals, 2)
-                
                 #cycle crossover
                 childPerm = Op.CycleCrossover(parents[0].permutation, parents[1].permutation)
-                
                 #swap mutation 
                 if(random.random() < 0.3):
                     childPerm = Op.Swap(childPerm)
-
                  # Create and evaluate child
                 childInd = Individual(tsp)
                 childInd.permutation = childPerm 

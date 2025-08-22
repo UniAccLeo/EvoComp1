@@ -14,7 +14,7 @@ class TSP :
         self.name = name
         self.comment = comment
         self.type = type
-        self.dimension = dimension
+        self.dimension = int(dimension)
         self.nodes = nodes
 
         matrix : List[List[float]] = [[0.0 for _ in range(int(dimension))] for _ in range(int(dimension))]
@@ -80,7 +80,10 @@ class TSP :
                     is_tour_section = True
                 continue
             else :
-                if line.startswith("EOF"):
+                if line.startswith("-1"):
                     break
-                solution.append(int(line))
+                solution.append(int(line) - 1)
         return solution
+    
+    def calculate_route_cost(self, route : List[int]) :
+        return sum(self.distance_matrix[route[i]][route[(i + 1) % len(route)]] for i in range(len(route))) 

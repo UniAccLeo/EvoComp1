@@ -4,14 +4,14 @@ import statistics
 import random
 from typing import List
 from tsp import TSP
-from evo_algo import Algorithm  # Import your Algorithm class
+from evo_algo import Algorithm  
 
 def run_statistical_analysis():
     os.makedirs('results', exist_ok=True)
     results_file = os.path.join('results', 'best_algorithm_stats.txt')
     
     problems = ["eil51", "eil76", "eil101", "st70", "kroA100", 
-                "kroC100", "kroD100", "lin105", "pcb442", "pr2392"]  # Removed usa13509 if too large
+                "kroC100", "kroD100", "lin105", "pcb442", "pr2392"]  
     
     pop_size = 50
     generations = 20000
@@ -30,10 +30,10 @@ def run_statistical_analysis():
                     tsp_file = f"data/{prob}.tsp"
                     tsp_instance = TSP.create_from_file(tsp_file)
                     
-                    # Run your BEST algorithm - replace GA2 with your actual best performer
+                    #best algo is GA2
                     result_pop = Algorithm.GA2(pop_size, tsp_instance, generations)
                     
-                    # Get best individual - ensure population is sorted
+                    # Get best individual 
                     result_pop.individuals.sort(key=lambda ind: ind.fitness)
                     best_individual = result_pop.individuals[0]
                     best_fitness = best_individual.fitness
@@ -56,14 +56,14 @@ def run_statistical_analysis():
                 
                 print(f"  {prob} - Avg: {avg_cost:.2f}, Std: {std_dev:.2f}, Min: {min_cost}, Max: {max_cost}")
     
-    print("✅ Statistical analysis completed!")
+    print("Statistical analysis completed")
 
 def run_comprehensive_tests():
     """Run all algorithms on all problems with different population sizes"""
     os.makedirs('results', exist_ok=True)
     
-    problems = ["eil51", "eil76", "eil101", "st70", "kroA100"]
-    population_sizes = [20, 50, 100]
+    problems = ["eil51", "eil76", "eil101", "st70", "kroA100", "kroc100", "krod100", "lin105", "pcb442", "pr2392"]
+    population_sizes = [20, 50, 100, 200]
     algorithms = ["GA1", "GA2", "GA3"]
     checkpoints = [2000, 5000, 10000, 20000]
     
@@ -97,10 +97,10 @@ def run_comprehensive_tests():
                         # Get final result
                         result_pop.individuals.sort(key=lambda ind: ind.fitness)
                         best_individual = result_pop.individuals[0]
-                        print(f"    ✅ Final fitness: {best_individual.fitness}")
+                        print(f"    Final fitness: {best_individual.fitness}")
                         
                     except Exception as e:
-                        print(f"    ❌ Error: {e}")
+                        print(f" Error: {e}")
                         # Log error to file
                         f.write(f"{prob},{pop_size},Error,{e}\n")
                         f.flush()
@@ -109,35 +109,17 @@ def run_comprehensive_tests():
                     run_time = time.time() - run_start
                     avg_time = (time.time() - start_time) / current_run
                     remaining = avg_time * (total_runs - current_run)
-                    print(f"    ⏱ This run: {run_time:.1f}s | ETA: {remaining/60:.1f} min")
+                    print(f"    This run: {run_time:.1f}s | ETA: {remaining/60:.1f} min")
 
-    print("✅ All comprehensive tests completed!")
+    print("test complete")
 
-def test_individual_algorithm():
-    """Quick test for a single algorithm"""
-    population_size = 50
-    generations = 2000  # Smaller for quick test
-    tsp_file = "data/eil51.tsp"
-    
-    tsp = TSP.create_from_file(tsp_file)
-    result_pop = Algorithm.GA1(population_size, tsp, generations)
-    
-    result_pop.individuals.sort(key=lambda ind: ind.fitness)
-    best_individual = result_pop.individuals[0]
-    print(f"Best tour length: {best_individual.fitness}")
-    print(f"Best tour: {best_individual.permutation}")
-    
-    return result_pop
 
-if __name__ == "__main__":
-    # Run quick test first to make sure everything works
-    print("Running quick test...")
-    test_individual_algorithm()
-    
-    # Then run the comprehensive analysis
-    print("\nStarting statistical analysis...")
-    run_statistical_analysis()
+
+if __name__ == "__main__":    
+    # # Then run the comprehensive analysis
+    # print("\nStarting statistical analysis...")
+    # run_statistical_analysis()
     
     # #Uncomment to run comprehensive tests (takes much longer)
-    # print("\nStarting comprehensive tests...")
-    # run_comprehensive_tests()
+    print("\nStarting comprehensive tests...")
+    run_comprehensive_tests()

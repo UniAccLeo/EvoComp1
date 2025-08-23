@@ -8,161 +8,127 @@ class Operators:
     def Insert(tour: List[int]) -> List[int]: 
         tour = tour.copy()
         size = len(tour)
-        #gets the start position and end position
+        #gets a random start position and end position
         start = random.randint(0, size-1)
         end = start 
         while(end == start):
             end = random.randint(0, size-1)
-
-        if(start < end):
+        if(start < end): #if you need to move the node to the right
             for i in range(start, end):
                 temp = tour[i]
                 tour[i] = tour[i+1]
                 tour[i+1] = temp
-        else:
+        else: #if you need to move the node to the left
             for i in range(start, end, -1):
                 temp = tour[i]
                 tour[i] = tour[i-1]
                 tour[i-1] = temp
-        #print(f"Insert: moved element from index {start} to {end} -> {tour}")
         return tour
-                
-    #algorihtm design for insert (kinda like bubbles sort)
-    #insert pos 5 in pos 2  
-    #0,1,2,3,4,5 
-    #0,1,2,3,5,4
-    #0,1,2,5,3,4
-    #0,1,5,2,3,4            
-    #insert pos 2 in pos 5 
-    #0,1,2,3,4,5 
-    #0,1,3,2,4,5
-    #0,1,3,4,2,5
-    #0,1,3,4,5,2
 
     @staticmethod 
     def Swap(tour: List[int]) -> List[int]: 
+        #gets a random start position and end position
         tour = tour.copy()
-
         size = len(tour)
         pos1 = random.randint(0, size-1)
         pos2 = pos1
         while(pos2 == pos1):
             pos2 = random.randint(0, size-1)
-        
+        #swaps the nodes
         temp = tour[pos1]
         tour[pos1] = tour[pos2]
         tour[pos2] = temp
-        #print(f"Swap: swapped indices {pos1} and {pos2} -> {tour}")
-        return tour 
 
+        return tour 
 
     @staticmethod 
     def Inversion(tour: List[int]) -> List[int]: 
         tour = tour.copy()
-
         size = len(tour)
         pos1 = random.randint(0, size-1)
         pos2 = pos1
         while(pos2 == pos1):
             pos2 = random.randint(0, size-1)
-
+        #makes sure that the the smaller position is pos1
         if(pos1 > pos2):
             temp = pos1
             pos1 = pos2
             pos2 = temp
-
+        #inverts the tour between the two positions
         tour[pos1:pos2+1] = tour[pos1:pos2+1][::-1]
-        #print(f"Inversion: reversed indices {pos1} to {pos2} -> {tour}")
+        
         return tour
     
-            
     @staticmethod
-    def OrderCrossover(tour1: List[int], tour2: List[int]) -> List[int]: #run this two times for two children as you can cross over in both ways
-        #create the random segment 
-        childTour = tour1.copy()
+    def OrderCrossover(tour1: List[int], tour2: List[int]) -> List[int]: 
+        #set tour1 as the child tour
+        childTour = tour1.copy() 
+        #find the bounds of the random segment 
         size = len(tour1)
         pos1 = random.randint(0, size-1)
         pos2 = pos1
         while(pos2 == pos1):
             pos2 = random.randint(0, size-1)
-
         if(pos1 > pos2):
             temp = pos1
             pos1 = pos2
             pos2 = temp
-        #set to contain the segment
+        #set to contain the nodes within the random segment of tour1
         segment = set()
         for i in range(pos1, pos2+1):
             segment.add(tour1[i])
-        
         ptr = 0
         t2ptr = 0
         while(ptr < size):
-            if(ptr >= pos1 and ptr <= pos2):
+            #if its inbetween the random segment we can skip
+            if(ptr >= pos1 and ptr <= pos2): 
                 ptr = pos2+1
                 continue
-            if(tour2[t2ptr] in segment):
+            #if the node in tour2 is already in the set then skip as it would be a duplicate
+            if(tour2[t2ptr] in segment): 
                 t2ptr = t2ptr + 1
                 continue
-            
-            childTour[ptr] = tour2[t2ptr]
+            #write over the genes in the child tour which wasnt in the random segment in order of tour2 nodes
+            childTour[ptr] = tour2[t2ptr] 
             ptr = ptr +1
             t2ptr = t2ptr + 1
 
-        # print(f"Parent1: {tour1}")
-        # print(f"Parent2: {tour2}")
-        # print(f"Segment indices: {pos1}-{pos2}, Segment: {tour1[pos1:pos2+1]}")
-        # print(f"Child: {childTour}\n")
         return childTour
             
     
     @staticmethod
     def PMX(tour1: List[int], tour2: List[int]) -> List[int]:
-        #create the random segment 
         childTour = tour1.copy()
         crossOver = {}
-
         size = len(tour1)
+        #create random segment
         pos1 = random.randint(0, size-1)
         pos2 = pos1
         while(pos2 == pos1):
             pos2 = random.randint(0, size-1)
-
         if(pos1 > pos2):
             temp = pos1
             pos1 = pos2
             pos2 = temp
-        
-        print(pos1)
-        print(pos2)
-        #loop over and add to hashmap
+        #hashmap stores the mapping from the cross over segment
         for i in range(pos1, pos2+1):
             crossOver[tour1[i]] = tour2[i]
         
+        #fill the rest of the child from parent 2
         for i in range(0, size):
             node = tour2[i]
             if(i >= pos1 and i <=pos2):
                 continue
 
-            visited = set()
+            visited = set() #visited set to prevent infininte loop
             while(node in crossOver):
                 if node in visited:
                     break
                 visited.add(node)
-                node = crossOver[node]
+                node = crossOver[node] #set the node tothe mapping of the crossover
 
             childTour[i] = node
-
-        print(f"Parent1: {tour1}")
-        print(f"Parent2: {tour2}")
-        print(f"Segment indices: {pos1}-{pos2}, Segment from Parent1: {tour1[pos1:pos2+1]}")
-        print(f"ChildTour: {childTour}\n")
         return childTour
-        
-       #3: 7
-       #4: 8
-       #5: 1 
-
 
     #------------------------------ Mark Section --------------------------------------------------
 

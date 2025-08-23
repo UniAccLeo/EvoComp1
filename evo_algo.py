@@ -10,7 +10,7 @@ import random
 class Algorithm:
 
     @staticmethod
-    def GA1(population_size: int, tspFile: TSP, generations: int):
+    def GA1(population_size: int, tspFile: TSP, generations: int, checkpoints=None, log_file=None):
         #algorithm 1 using OX and inversion 
         tsp = tspFile
         #load the population
@@ -45,11 +45,19 @@ class Algorithm:
             pop.individuals.sort(key = lambda ind: ind.fitness)
             pop.individuals = pop.individuals[:pop.size]
             CurrGen = CurrGen + 1
+
+            #print fitness at the generation checkpoints 2000, 5000,10000, 20000
+            if checkpoints and CurrGen in checkpoints:
+                best_ind = pop.best_individual()
+                if log_file:
+                    log_file.write(f"{tspFile.name},{population_size},{CurrGen},{best_ind.fitness}\n")
+                    log_file.flush()
+                print(f"Checkpoint {CurrGen}: Best fitness = {best_ind.fitness}")
         
         return pop
     
     @staticmethod
-    def GA2(population_size: int, tspFile: TSP, generations: int):
+    def GA2(population_size: int, tspFile: TSP, generations: int, checkpoints=None, log_file=None):
         tsp = tspFile
         pop = Population(population_size, tsp)
         Op = Operators
@@ -77,11 +85,18 @@ class Algorithm:
             pop.individuals.sort(key = lambda ind: ind.fitness)
             pop.individuals = pop.individuals[:pop.size]
             CurrGen = CurrGen + 1
+
+            if checkpoints and CurrGen in checkpoints:
+                best_ind = pop.best_individual()
+                if log_file:
+                    log_file.write(f"{tspFile.name},{population_size},{CurrGen},{best_ind.fitness}\n")
+                    log_file.flush()
+                print(f"Checkpoint {CurrGen}: Best fitness = {best_ind.fitness}")
         
         return pop
             
     @staticmethod 
-    def GA3(population_size: int, tspFile: TSP, generations: int):
+    def GA3(population_size: int, tspFile: TSP, generations: int, checkpoints=None, log_file=None):
         tsp = tspFile
         pop = Population(population_size, tsp)
         Op = Operators
@@ -115,6 +130,13 @@ class Algorithm:
         #generational replacement
             pop.individuals = children
             CurrGen = CurrGen + 1
+
+            if checkpoints and CurrGen in checkpoints:
+                best_ind = pop.best_individual()
+                if log_file:
+                    log_file.write(f"{tspFile.name},{population_size},{CurrGen},{best_ind.fitness}\n")
+                    log_file.flush()
+                print(f"Checkpoint {CurrGen}: Best fitness = {best_ind.fitness}")
 
         return pop
        

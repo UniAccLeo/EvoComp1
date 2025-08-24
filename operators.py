@@ -132,84 +132,96 @@ class Operators:
 
     @staticmethod
     def CycleCrossover(tour1: List[int], tour2: List[int]) -> List[int]:
-        """
-        Cycle Crossover (CX).
-        Returns a single child by alternating cycles between parents.
-        """
         size = len(tour1)
-        child = [-1] * size
-        visited = [False] * size
+        childTour = [-1] * size
+        alleleVisited = [False] * size
         cycle = 0
 
-        while not all(visited):
-            # find first index not visited yet
-            start = next(i for i, v in enumerate(visited) if not v)
-            idx = start
-            # follow cycle
-            while not visited[idx]:
-                visited[idx] = True
+        while alleleVisited.count(True) < size:
+            # start with the first unvisited allele
+            start = None
+            for i in range(len(alleleVisited)):
+                if not alleleVisited[i]:
+                    start = i
+                    break
+
+            current = start
+            # cycle loop
+            while not alleleVisited[current]:
+                alleleVisited[current] = True
                 if cycle % 2 == 0:
-                    child[idx] = tour1[idx]
+                    # if even cycle, take allele from Parent1
+                    childTour[current] = tour1[current]
                 else:
-                    child[idx] = tour2[idx]
-                # move to position in P1 where p2[idx] occurs
-                idx = tour1.index(tour2[idx])
+                    # if odd cycle, take allele from Parent2
+                    childTour[current] = tour2[current]
+                # move to position in Parent1 where Parent2[current] is found
+                current = tour1.index(tour2[current])
             cycle += 1
 
-        return child
+        return childTour
 
     @staticmethod
     def EdgeRecombination(tour1: List[int], tour2: List[int]) -> List[int]:
-        #create a hashmap: key: city, ans: combined neighbors of both parent
-        t1 = tour1.copy()
-        t2 = tour2.copy()
-        size = len(t1)
-        # build adjacency sets: for each city, add both neighbors from both parents
-        adj = {city: set() for city in t1}
-        for p in (t1, t2):
-            for i in range(len(p)):
-                city = p[i]
-                left = p[(i - 1) % size]
-                right = p[(i + 1) % size]
-                adj[city].add(left)
-                adj[city].add(right)
+        # create a dictionary that has key:city and ans:combined neighbours of both parents
+        size = len(tour1)
+        edgeTable = {city: set() for city in tour1}
+        for i in (tour1, tour2):
+            for j in range(len(i)):
+                city = i[j]
+                left = i[(j - 1) % size]
+                right = i[(j + 1) % size]
+                edgeTable[city].add(left)
+                edgeTable[city].add(right)
+        childTour: List[int] = []
+        unused = set(tour1)
 
-        child: List[int] = []
-        unused = set(t1)
+        # start from a city chosen at random
+        current = random.choice(tour1)
+        # print(current)
 
-        # start from a random city taken from parent1 (consistent with many ERX variants)
-        current = random.choice(t1)
-        print(current)
-
-        while len(child) < size:
-            child.append(current)
+        while len(childTour) < size:
+            childTour.append(current)
             unused.discard(current)
 
-            # remove 'current' from all adjacency sets (so counts reflect remaining choices)
-            for s in adj.values():
-                s.discard(current)
+            # delete current city from the set
+            for i in edgeTable.values():
+                i.discard(current)
 
-            # find neighbors of current that are still unused
-            neighbors = [v for v in adj[current] if v in unused]
-            if neighbors:
-                # choose neighbor with smallest adjacency set (min remaining edges)
-                min_size = min(len(adj[n]) for n in neighbors)
-                candidates = [n for n in neighbors if len(adj[n]) == min_size]
-                next_city = random.choice(candidates)
-            else:
-                # no usable neighbor => pick random unused city
+            # check if current city has any common edges
+            commonEdge = []
+            for i in edgeTable[current]:
+                if i in unused:
+                    commonEdge.append(i)
+
+            # if common edges exist, choose one with smallest remaining edges
+            if commonEdge:
+                sizes = []
+                for i in commonEdge:
+                    sizes.append(len(edgeTable[i]))
+                minSize = min(sizes)
+                candidates = []
+                for i in commonEdge:
+                    if len(edgeTable[i]) == minSize:
+                        candidates.append(i)
+                nextCity = random.choice(candidates)
+            else: # otherwise choose any city with smallest remaining edges
                 if unused:
-                    next_city = random.choice(list(unused))
+                    sizes = []
+                    for i in commonEdge:
+                        sizes.append(len(edgeTable[i]))
+                    minSize = min(sizes)
+                    candidates = []
+                    for i in unused:
+                        if len(edgeTable[i]) == minSize:
+                            candidates.append(i)
+                    # pick random city when tied shortest lists
+                    nextCity = random.choice(candidates)
                 else:
-                    break  # finished
-            current = next_city
+                    break
+            current = nextCity
 
-        # safety: if anything left, append them
-        if len(child) < size:
-            for v in list(unused):
-                child.append(v)
-
-        return child
+        return childTour
     
     # -------------------------------------------------------------------------------------------------------
  

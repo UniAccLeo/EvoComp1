@@ -1,0 +1,7 @@
+Across the three neighbourhood algorithms, 2-opt consistently outperformed both jump and exchange methods in terms 
+of producing the lowest minimum and mean tour costs. The jump algorithm generally provided better results over 
+exchange, however both of these algorithms showed poor stability as the tour costs achieved varied significantly 
+across trials. Generally, all algorithms had strong performances with small tours, however the scalability 
+limitations was highlighted with larger tours such as PR2392 and USA13509. For both of these tours the majority of 
+trials reached the maximum iteration limit suggesting it likely failed to converge to a local optima. 
+This highlights the computational inefficiencies of local search for very large TSPs.

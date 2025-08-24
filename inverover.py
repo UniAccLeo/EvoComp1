@@ -49,13 +49,13 @@ def inver_over (tsp : TSP, population_size : int = 100, p : float = 0.02, iterat
             new_route_cost = tsp.calculate_route_cost(new_route)
             if new_route_cost < tsp.calculate_route_cost(route) :
                 routes[idx] = new_route[:]
-                updated_best_route = True
-                best_route_unchanged_times = 1
+                # updated_best_route = True
+                # best_route_unchanged_times = 1
                 if new_route_cost< best_route_cost : 
                     best_route = new_route[:]
                     best_route_cost = new_route_cost
-                    # best_route_unchanged_times = 1
-                    # updated_best_route = True
+                    best_route_unchanged_times = 1
+                    updated_best_route = True
         if not updated_best_route :
             best_route_unchanged_times += 1    
     return best_route, iterations

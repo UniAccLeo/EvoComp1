@@ -7,7 +7,7 @@ def main():
     "kroc100", "krod100", "lin105", "pcb442", "pr2392", "usa13509"]
 
     os.makedirs('results', exist_ok=True)
-    path = os.path.join('results', 'inverover_test_1.txt')
+    path = os.path.join('results', 'inverover_test_2.txt')
 
     with open(path, 'w') as f:
         for problem in problems :
@@ -32,6 +32,7 @@ def main():
             f.write(f"results for {tsp.name}:\n")
             f.write(f"mean: {mean}\n")
             f.write(f"stdev: {stdev}\n\n")
+            f.flush()
 
     print("\nAll tests completed.")
 

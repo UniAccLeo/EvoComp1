@@ -1,11 +1,11 @@
 Leo - Q1, Q7
 
-Angelo - Q6
+Angelo - Q6 , Q4 - mutation algorithms
 
-Mark - Q4
+Mark - Q4 - cross over algorithms
 
 Gautam - Q3 
 
-Sree - Q5 Q3
+Sree - Q5 
 
 Raad - Q2

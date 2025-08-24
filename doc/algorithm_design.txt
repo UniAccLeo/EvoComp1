@@ -43,7 +43,7 @@ longer
 OutCome for testing:
 From the GA1, GA2, and GA3 test CSV files, you can see that GA2 consistently achieves lower (better) fitness values across almost all problem instances 
 and parameter settings. For smaller problems like eil51 and eil76, the differences are small, but for larger problems such as pcb442 and pr2392,
-the improvement is substantial. GA1 sometimes reaches good solutions quickly due to its simpler OX crossover and faster generation of two children
+the improvment is substantial. GA1 sometimes reaches good solutions quickly due to its simpler OX crossover and faster generation of two children
 per iteration, but it frequently gets trapped in local minima, leading to being stuck in later generations. GA3, while faster in computation, suffers 
 from poorer convergence because its heavy mutation strat often disrupts good partial solutions, resulting in higher final fitness values. 
 Overall, the CSV results support GA2’s design choice: although it has higher computational cost per generation due to its computation involves only creating 

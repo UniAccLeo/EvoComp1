@@ -104,5 +104,6 @@ def run_tests():
                         f.write(f"{prob},{pop_size},Error,{e}\n")
 
 if __name__ == "__main__":    
-    run_statistical_analysis()
     run_tests()
+    run_statistical_analysis()
+   

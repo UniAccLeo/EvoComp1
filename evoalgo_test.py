@@ -56,7 +56,7 @@ def run_statistical_analysis():
                 max_cost = max(all_results)
                 #write results to the file and print in terminal
                 f.write(f"{prob},{avg_cost},{std_dev},{min_cost},{max_cost}\n")
-                print(f"Summary - Avg: {avg_cost:.2f}, Std: {std_dev:.2f}, Min: {min_cost}, Max: {max_cost}")
+                print(f"Summary - Avg: {avg_cost}, Std: {std_dev}, Min: {min_cost}, Max: {max_cost}")
 
 def run_tests():
     #this function tests all three GA algorihtms across different population sizes and problem instances, testing GA1,GA2 and GA3 performance
@@ -94,7 +94,7 @@ def run_tests():
                         
                     try:
                         #run the algorihtm with checkpoint logging
-                        print(f"Running {algo_name}, pop={pop_size}, on {prob}...")
+                        print(f"Running {algo_name}, pop={pop_size}, on {prob}")
                         result_pop = algo_method(pop_size, tsp_instance, 20000, checkpoints, f)
                         final_fitness = result_pop.individuals[0].fitness
                         f.write(f"{prob},{pop_size},Final,{final_fitness}\n")

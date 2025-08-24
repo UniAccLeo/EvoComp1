@@ -33,10 +33,19 @@ Insert mutation was used as it is medium to high level of exploratiuon which is 
 making it even better the longer the generations run. I'm using generational replacement as its sufficient compard to steady state where it replaces the 
 worst individual every team which means number of iterations would be much larger.
 
-
 GA design3:
 For this third algorithm I tried something a lot more different to 1 and 2. I decided to make a slower convergence using the fitness proportion selection 
 for the parents. Im using a cycle crossover and a swap mutation with the idea that cycle crossover keeps cities in their absolute positions from parents and swap mutation similarly 
 gently explores nearby arrangments of the tour. Unlike Design2 thisalgirihtm is less prone to premature convergence which means maints a higher dviersity throughout the run. 
 In terms of the replacement strategy, since its a lot slower, a generational replacement makes sense here as it allows the diversity maintained by FPS to persits 
 longer
+
+OutCome for testing:
+From the GA1, GA2, and GA3 test CSV files, you can see that GA2 consistently achieves lower (better) fitness values across almost all problem instances 
+and parameter settings. For smaller problems like eil51 and eil76, the differences are small, but for larger problems such as pcb442 and pr2392,
+the improvement is substantial. GA1 sometimes reaches good solutions quickly due to its simpler OX crossover and faster generation of two children
+per iteration, but it frequently gets trapped in local minima, leading to being stuck in later generations. GA3, while faster in computation, suffers 
+from poorer convergence because its heavy mutation strat often disrupts good partial solutions, resulting in higher final fitness values. 
+Overall, the CSV results support GA2’s design choice: although it has higher computational cost per generation due to its computation involves only creating 
+one child per generation which means double the computations of GA1 and GA3, its combination of Edge Recombination Crossover 
+and Insert mutation provides the best trade-off between convergence quality and robustness, especially for larger TSP instances.

@@ -3,7 +3,7 @@ from tsp import TSP;
 from operators import Operators
 from selection import Selection
 from population_rep import Population, Individual
-from operators2 import Operators2   
+
 import heapq
 import random
 

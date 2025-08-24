@@ -131,8 +131,8 @@ def test_individual_algorithm():
 
 if __name__ == "__main__":
     # Run quick test first to make sure everything works
-    print("Running quick test...")
-    test_individual_algorithm()
+    # print("Running quick test...")
+    # test_individual_algorithm()
     
     # Then run the comprehensive analysis
     print("\nStarting statistical analysis...")

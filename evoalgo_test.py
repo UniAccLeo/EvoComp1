@@ -1,143 +1,108 @@
-import time
 import os
 import statistics
-import random
-from typing import List
+from evo_algo import Algorithm
 from tsp import TSP
-from evo_algo import Algorithm  # Import your Algorithm class
 
 def run_statistical_analysis():
     os.makedirs('results', exist_ok=True)
-    results_file = os.path.join('results', 'best_algorithm_stats.txt')
-    
+    results_file = os.path.join('results', 'evo.txt')
+
+    #tsp instances
     problems = ["eil51", "eil76", "eil101", "st70", "kroA100", 
-                "kroC100", "kroD100", "lin105", "pcb442", "pr2392"]  # Removed usa13509 if too large
+                "kroC100", "kroD100", "lin105", "pcb442", "pr2392", "usa13509"]  
     
-    pop_size = 50
-    generations = 20000
-    num_runs = 30
+    #genetic algorihtm parameters
+    pop_size = 50           #population size of all runs
+    generations = 20000     #number of generations to evolve
+    num_runs = 30           #number of runs per problem
     
+    # Preload TSP instances to save loading 29 time by storing into hashmap
+    print("Preloading TSP instances for statistical analysis...")
+    tsp_instances = {}
+    for prob in problems:
+        try:
+            tsp_file = f"data/{prob}.tsp"
+            tsp_instances[prob] = TSP.create_from_file(tsp_file)
+        except Exception as e:
+            print(f"Failed to load {prob}: {e}")
+            tsp_instances[prob] = None
+
+    #open the results folder and write the csv header titles
     with open(results_file, 'w') as f:
         f.write("Instance,AverageCost,StandardDeviation,MinCost,MaxCost\n")
-        f.flush()
         
+        #process each TSP problem
         for prob in problems:
             print(f"\nRunning {prob} {num_runs} times...")
-            all_results = []
-            
+            all_results = [] #store results for the current problem
+            tsp_instance = tsp_instances[prob]
+                
             for run in range(num_runs):
                 try:
-                    tsp_file = f"data/{prob}.tsp"
-                    tsp_instance = TSP.create_from_file(tsp_file)
-                    
-                    # Run your BEST algorithm - replace GA2 with your actual best performer
+                    #run GA2 which is best performing algorithm
                     result_pop = Algorithm.GA2(pop_size, tsp_instance, generations)
-                    
-                    # Get best individual - ensure population is sorted
-                    result_pop.individuals.sort(key=lambda ind: ind.fitness)
-                    best_individual = result_pop.individuals[0]
-                    best_fitness = best_individual.fitness
+                    best_fitness = result_pop.individuals[0].fitness
                     all_results.append(best_fitness)
-                    
-                    print(f"  Run {run+1}/{num_runs}: {best_fitness}")
+                    print(f"Run {run+1}/{num_runs}: {best_fitness}")
                     
                 except Exception as e:
-                    print(f"  Run {run+1} failed: {e}")
+                    print(f"Run {run+1} failed: {e}")
                     continue
-            
+            #calculate the statistics if we have successful runs 
             if all_results:
                 avg_cost = statistics.mean(all_results)
-                std_dev = statistics.stdev(all_results) if len(all_results) > 1 else 0
+                std_dev = statistics.stdev(all_results) 
                 min_cost = min(all_results)
                 max_cost = max(all_results)
-                
+                #write results to the file and print in terminal
                 f.write(f"{prob},{avg_cost},{std_dev},{min_cost},{max_cost}\n")
-                f.flush()
-                
-                print(f"  {prob} - Avg: {avg_cost:.2f}, Std: {std_dev:.2f}, Min: {min_cost}, Max: {max_cost}")
-    
-    print("✅ Statistical analysis completed!")
+                print(f"Summary - Avg: {avg_cost:.2f}, Std: {std_dev:.2f}, Min: {min_cost}, Max: {max_cost}")
 
-def run_comprehensive_tests():
-    """Run all algorithms on all problems with different population sizes"""
+def run_tests():
+    #this function tests all three GA algorihtms across different population sizes and problem instances, testing GA1,GA2 and GA3 performance
     os.makedirs('results', exist_ok=True)
-    
-    problems = ["eil51", "eil76", "eil101", "st70", "kroA100"]
-    population_sizes = [20, 50, 100]
+    problems = ["eil51", "eil76", "eil101", "st70", "kroA100", 
+                "kroC100", "kroD100", "lin105", "pcb442", "pr2392", "usa13509"]  
+    population_sizes = [20, 50, 100, 200]
     algorithms = ["GA1", "GA2", "GA3"]
     checkpoints = [2000, 5000, 10000, 20000]
     
-    total_runs = len(algorithms) * len(population_sizes) * len(problems)
-    current_run = 0
-    start_time = time.time()
-
+    # Preload TSP instances
+    print("Preloading TSP instances for comprehensive tests...")
+    tsp_instances = {}
+    for prob in problems:
+        try:
+            tsp_file = f"data/{prob}.tsp"
+            tsp_instances[prob] = TSP.create_from_file(tsp_file)
+        except Exception as e:
+            print(f"Failed to load {prob}: {e}")
+            tsp_instances[prob] = None
+    #testing each algorithm
     for algo_name in algorithms:
         algo_method = getattr(Algorithm, algo_name)
-        results_file = os.path.join('results', f'{algo_name}_comprehensive.csv')
+        results_file = os.path.join('results', f'{algo_name}_test.csv')
         
+        #create results file
         with open(results_file, 'w') as f:
             f.write("Instance,PopulationSize,Generation,BestFitness\n")
-            f.flush()
             
+            #test all population sizes
             for pop_size in population_sizes:
+                #test all problem instances
                 for prob in problems:
-                    current_run += 1
-                    run_start = time.time()
-                    
-                    progress = (current_run / total_runs) * 100
-                    print(f"[{progress:.2f}%] {algo_name} | {prob} | Pop={pop_size}")
-                    
+                    tsp_instance = tsp_instances[prob]
+                        
                     try:
-                        tsp_file = f"data/{prob}.tsp"
-                        tsp_instance = TSP.create_from_file(tsp_file)
-                        
-                        # Run algorithm - pass checkpoints and file handle for logging
+                        #run the algorihtm with checkpoint logging
+                        print(f"Running {algo_name}, pop={pop_size}, on {prob}...")
                         result_pop = algo_method(pop_size, tsp_instance, 20000, checkpoints, f)
-                        
-                        # Get final result
-                        result_pop.individuals.sort(key=lambda ind: ind.fitness)
-                        best_individual = result_pop.individuals[0]
-                        print(f"    ✅ Final fitness: {best_individual.fitness}")
+                        final_fitness = result_pop.individuals[0].fitness
+                        f.write(f"{prob},{pop_size},Final,{final_fitness}\n")
                         
                     except Exception as e:
-                        print(f"    ❌ Error: {e}")
-                        # Log error to file
+                        print(f"Error running {prob} with {algo_name}: {e}")
                         f.write(f"{prob},{pop_size},Error,{e}\n")
-                        f.flush()
-                    
-                    # ETA calculation
-                    run_time = time.time() - run_start
-                    avg_time = (time.time() - start_time) / current_run
-                    remaining = avg_time * (total_runs - current_run)
-                    print(f"    ⏱ This run: {run_time:.1f}s | ETA: {remaining/60:.1f} min")
 
-    print("✅ All comprehensive tests completed!")
-
-def test_individual_algorithm():
-    """Quick test for a single algorithm"""
-    population_size = 50
-    generations = 2000  # Smaller for quick test
-    tsp_file = "data/eil51.tsp"
-    
-    tsp = TSP.create_from_file(tsp_file)
-    result_pop = Algorithm.GA1(population_size, tsp, generations)
-    
-    result_pop.individuals.sort(key=lambda ind: ind.fitness)
-    best_individual = result_pop.individuals[0]
-    print(f"Best tour length: {best_individual.fitness}")
-    print(f"Best tour: {best_individual.permutation}")
-    
-    return result_pop
-
-if __name__ == "__main__":
-    # Run quick test first to make sure everything works
-    # print("Running quick test...")
-    # test_individual_algorithm()
-    
-    # Then run the comprehensive analysis
-    print("\nStarting statistical analysis...")
+if __name__ == "__main__":    
     run_statistical_analysis()
-    
-    # #Uncomment to run comprehensive tests (takes much longer)
-    # print("\nStarting comprehensive tests...")
-    # run_comprehensive_tests()
+    run_tests()

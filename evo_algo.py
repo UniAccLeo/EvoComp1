@@ -10,7 +10,7 @@ import random
 class Algorithm:
 
     @staticmethod
-    def GA1(population_size: int, tspFile: TSP, generations: int):
+    def GA1(population_size: int, tspFile: TSP, generations: int, checkpoints=None, log_file=None):
         #algorithm 1 using OX and inversion 
         tsp = tspFile
         #load the population
@@ -45,11 +45,19 @@ class Algorithm:
             pop.individuals.sort(key = lambda ind: ind.fitness)
             pop.individuals = pop.individuals[:pop.size]
             CurrGen = CurrGen + 1
+
+            #print fitness at the generation checkpoints 2000, 5000,10000, 20000
+            if checkpoints and CurrGen in checkpoints:
+                best_ind = pop.best_individual()
+                if log_file:
+                    log_file.write(f"{tspFile.name},{population_size},{CurrGen},{best_ind.fitness}\n")
+                    log_file.flush()
+                print(f"Checkpoint {CurrGen}: Best fitness = {best_ind.fitness}")
         
         return pop
     
     @staticmethod
-    def GA2(population_size: int, tspFile: TSP, generations: int):
+    def GA2(population_size: int, tspFile: TSP, generations: int, checkpoints=None, log_file=None):
         tsp = tspFile
         pop = Population(population_size, tsp)
         Op = Operators
@@ -59,7 +67,7 @@ class Algorithm:
             ind.evaluate()
 
         while(CurrGen < generations):
-            #print(CurrGen)
+            print(CurrGen)
             children = []
             while(len(children) < pop.size):
                 parents = Selection.tournament(pop.individuals, 2, 5) #picks two parents, from a tournament size of 5 migh tneed to adjust
@@ -77,11 +85,18 @@ class Algorithm:
             pop.individuals.sort(key = lambda ind: ind.fitness)
             pop.individuals = pop.individuals[:pop.size]
             CurrGen = CurrGen + 1
+
+            if checkpoints and CurrGen in checkpoints:
+                best_ind = pop.best_individual()
+                if log_file:
+                    log_file.write(f"{tspFile.name},{population_size},{CurrGen},{best_ind.fitness}\n")
+                    log_file.flush()
+                print(f"Checkpoint {CurrGen}: Best fitness = {best_ind.fitness}")
         
         return pop
             
     @staticmethod 
-    def GA3(population_size: int, tspFile: TSP, generations: int):
+    def GA3(population_size: int, tspFile: TSP, generations: int, checkpoints=None, log_file=None):
         tsp = tspFile
         pop = Population(population_size, tsp)
         Op = Operators
@@ -116,57 +131,14 @@ class Algorithm:
             pop.individuals = children
             CurrGen = CurrGen + 1
 
+            if checkpoints and CurrGen in checkpoints:
+                best_ind = pop.best_individual()
+                if log_file:
+                    log_file.write(f"{tspFile.name},{population_size},{CurrGen},{best_ind.fitness}\n")
+                    log_file.flush()
+                print(f"Checkpoint {CurrGen}: Best fitness = {best_ind.fitness}")
+
         return pop
        
 
-def testAlgo():
-    populationSize = 200
-    generationSize = 20000
-    tsp_file = "data/eil51.tsp"
-
-    tsp = TSP.create_from_file(tsp_file)
-
-    result_pop = Algorithm.GA1(populationSize, tsp, generationSize)
-
-    # Get final best individual
-    best_individual = result_pop.best_individual()
-    print(f"Best tour length: {best_individual.fitness}")
-    print(f"Best tour: {best_individual.permutation}")
-    
-    return result_pop
-
-def testAlgo2():
-    populationSize = 200
-    generationSize = 2000
-    tsp_file = "data/eil51.tsp"
-
-    tsp = TSP.create_from_file(tsp_file)
-
-    result_pop = Algorithm.GA2(populationSize, tsp, generationSize)
-
-    # Get final best individual
-    best_individual = result_pop.individuals[0]  # Population is already sorted
-    print(f"GA2 - Best tour length: {best_individual.fitness}")
-    print(f"GA2 - Best tour: {best_individual.permutation}")
-    
-    return result_pop
-
-def testAlgo3():
-    populationSize = 200
-    generationSize = 2000
-    tsp_file = "data/eil51.tsp"
-
-    tsp = TSP.create_from_file(tsp_file)
-
-    result_pop = Algorithm.GA3(populationSize, tsp, generationSize)
-
-    # Get final best individual
-    best_individual = result_pop.individuals[0]  # Population is already sorted
-    print(f"GA3 - Best tour length: {best_individual.fitness}")
-    print(f"GA3 - Best tour: {best_individual.permutation}")
-    
-    return result_pop
-
-if __name__ == "__main__":
-    testAlgo3()
 

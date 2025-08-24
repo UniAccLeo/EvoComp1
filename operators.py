@@ -54,7 +54,7 @@ class Operators:
             temp = pos1
             pos1 = pos2
             pos2 = temp
-        #inverts the tour between the two positions
+        #reverse the segment between pos1 and pos2
         tour[pos1:pos2+1] = tour[pos1:pos2+1][::-1]
         
         return tour
@@ -80,18 +80,16 @@ class Operators:
         ptr = 0
         t2ptr = 0
         while(ptr < size):
-            #if its inbetween the random segment we can skip
             if(ptr >= pos1 and ptr <= pos2): 
-                ptr = pos2+1
+                ptr = pos2+1 #skip preserved segments
                 continue
-            #if the node in tour2 is already in the set then skip as it would be a duplicate
             if(tour2[t2ptr] in segment): 
-                t2ptr = t2ptr + 1
+                t2ptr +=1#skip duplicates
                 continue
             #write over the genes in the child tour which wasnt in the random segment in order of tour2 nodes
             childTour[ptr] = tour2[t2ptr] 
-            ptr = ptr +1
-            t2ptr = t2ptr + 1
+            ptr += 1
+            t2ptr +=1
 
         return childTour
             
@@ -101,7 +99,7 @@ class Operators:
         childTour = tour1.copy()
         crossOver = {}
         size = len(tour1)
-        #create random segment
+        #select random segment
         pos1 = random.randint(0, size-1)
         pos2 = pos1
         while(pos2 == pos1):
@@ -110,17 +108,17 @@ class Operators:
             temp = pos1
             pos1 = pos2
             pos2 = temp
-        #hashmap stores the mapping from the cross over segment
+        #hashmap stores the mapping from parent1 segment to parent 2 segment
         for i in range(pos1, pos2+1):
             crossOver[tour1[i]] = tour2[i]
         
-        #fill the rest of the child from parent 2
+        #fill the non segment positions using parent2, applying mapping if needed
         for i in range(0, size):
             node = tour2[i]
             if(i >= pos1 and i <=pos2):
-                continue
+                continue #skip segment as it is already copied from parent1
 
-            visited = set() #visited set to prevent infininte loop
+            visited = set() #visited set to prevent infininte loop/mapping conflict
             while(node in crossOver):
                 if node in visited:
                     break

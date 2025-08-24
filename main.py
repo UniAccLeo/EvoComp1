@@ -1,5 +1,6 @@
 from tsp import TSP
 from inverover import inver_over
+from local import run_all_local_search
 
 def main():
     problem = "eil101" 
@@ -17,6 +18,7 @@ def main():
     # print(f"First 5 matrix inputs: {[row[:5] for row in tsp.distance_matrix[:5]]}")
     # print(f"First 5 nodes in solution: {tsp.load_solution()[:5]}")
     # print(best_route)
+    run_all_local_search()
 
 if __name__ == "__main__":
     main()

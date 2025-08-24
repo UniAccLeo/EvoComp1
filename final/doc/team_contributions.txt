@@ -1,11 +1,11 @@
-Leo - Q1, Q7
+Leo a1853245 - Q1, Q7 
 
-Angelo - Q6 , Q4 - mutation algorithms
+Angelo a1885356 - Q6 , Q4 - mutation algorithms and algorihtm_design.txt
 
-Mark - Q4 - cross over algorithms
+Mark a1887462 - Q4 - cross over algorithms
 
-Gautam - Q3 
+Gautam a1889102 - Q3 
 
-Sree - Q5 
+Sree a1890452 - Q5 
 
-Raad - Q2
+Raad a1892621 - Q2 

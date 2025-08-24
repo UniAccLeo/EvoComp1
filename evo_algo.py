@@ -67,7 +67,7 @@ class Algorithm:
             ind.evaluate()
 
         while(CurrGen < generations):
-            #print(CurrGen)
+            print(CurrGen)
             children = []
             while(len(children) < pop.size):
                 parents = Selection.tournament(pop.individuals, 2, 5) #picks two parents, from a tournament size of 5 migh tneed to adjust
@@ -141,54 +141,4 @@ class Algorithm:
         return pop
        
 
-def testAlgo():
-    populationSize = 200
-    generationSize = 20000
-    tsp_file = "data/eil51.tsp"
-
-    tsp = TSP.create_from_file(tsp_file)
-
-    result_pop = Algorithm.GA1(populationSize, tsp, generationSize)
-
-    # Get final best individual
-    best_individual = result_pop.best_individual()
-    print(f"Best tour length: {best_individual.fitness}")
-    print(f"Best tour: {best_individual.permutation}")
-    
-    return result_pop
-
-def testAlgo2():
-    populationSize = 200
-    generationSize = 2000
-    tsp_file = "data/eil51.tsp"
-
-    tsp = TSP.create_from_file(tsp_file)
-
-    result_pop = Algorithm.GA2(populationSize, tsp, generationSize)
-
-    # Get final best individual
-    best_individual = result_pop.individuals[0]  # Population is already sorted
-    print(f"GA2 - Best tour length: {best_individual.fitness}")
-    print(f"GA2 - Best tour: {best_individual.permutation}")
-    
-    return result_pop
-
-def testAlgo3():
-    populationSize = 200
-    generationSize = 2000
-    tsp_file = "data/eil51.tsp"
-
-    tsp = TSP.create_from_file(tsp_file)
-
-    result_pop = Algorithm.GA3(populationSize, tsp, generationSize)
-
-    # Get final best individual
-    best_individual = result_pop.individuals[0]  # Population is already sorted
-    print(f"GA3 - Best tour length: {best_individual.fitness}")
-    print(f"GA3 - Best tour: {best_individual.permutation}")
-    
-    return result_pop
-
-if __name__ == "__main__":
-    testAlgo3()
 

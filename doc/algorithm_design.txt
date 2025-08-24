@@ -25,7 +25,6 @@ the good solutions using crossover(maintains the good sequences - small change) 
 change to the tour. I used a generation replacement with strong elitism, again to maintain diversity, which would be important for when u run the 
 algorithm for many more generations. ( (μ + λ) selection)
 
-
 GA Design 2 
 For the second algorithm, I decided to change the crosover and mutation algorithm with ERX and insert mutation. 
 ERX mutation is a really good exploiter for graph problems and therefore needs a diverse range of parents to combine, so 

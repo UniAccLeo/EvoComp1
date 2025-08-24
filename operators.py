@@ -133,6 +133,34 @@ class Operators:
     #------------------------------ Mark Section --------------------------------------------------
 
     @staticmethod
+    def CycleCrossover(tour1: List[int], tour2: List[int]) -> List[int]:
+        """
+        Cycle Crossover (CX).
+        Returns a single child by alternating cycles between parents.
+        """
+        size = len(tour1)
+        child = [-1] * size
+        visited = [False] * size
+        cycle = 0
+
+        while not all(visited):
+            # find first index not visited yet
+            start = next(i for i, v in enumerate(visited) if not v)
+            idx = start
+            # follow cycle
+            while not visited[idx]:
+                visited[idx] = True
+                if cycle % 2 == 0:
+                    child[idx] = tour1[idx]
+                else:
+                    child[idx] = tour2[idx]
+                # move to position in P1 where p2[idx] occurs
+                idx = tour1.index(tour2[idx])
+            cycle += 1
+
+        return child
+
+    @staticmethod
     def EdgeRecombination(tour1: List[int], tour2: List[int]) -> List[int]:
         #create a hashmap: key: city, ans: combined neighbors of both parent
         t1 = tour1.copy()
@@ -153,7 +181,7 @@ class Operators:
 
         # start from a random city taken from parent1 (consistent with many ERX variants)
         current = random.choice(t1)
-        #print(current)
+        print(current)
 
         while len(child) < size:
             child.append(current)
@@ -184,71 +212,6 @@ class Operators:
                 child.append(v)
 
         return child
-
-    @staticmethod
-    def CycleCrossover(tour1: List[int], tour2: List[int]) -> List[int]:
-        """
-        Cycle Crossover (CX).
-        Returns a single child by alternating cycles between parents.
-        """
-        size = len(tour1)
-        child = [-1] * size
-        visited = [False] * size
-        cycle = 0
-
-        while not all(visited):
-            # find first index not visited yet
-            start = next(i for i, v in enumerate(visited) if not v)
-            idx = start
-            # follow cycle
-            while not visited[idx]:
-                visited[idx] = True
-                if cycle % 2 == 0:
-                    child[idx] = tour1[idx]
-                else:
-                    child[idx] = tour2[idx]
-                # move to position in P1 where p2[idx] occurs
-                idx = tour1.index(tour2[idx])
-            cycle += 1
-
-        return child
     
     # -------------------------------------------------------------------------------------------------------
  
-def test_order_crossover():
-    parent1 = [0, 1, 2, 3, 4, 5]
-    parent2 = [5, 4, 3, 2, 1, 0]
-    # Test 1: segment in middle
-    Operators.OrderCrossover(parent1, parent2)
-
-
-def test_pmx():
-    parent1 = [1, 2, 3, 4, 5, 6, 7, 8]
-    parent2 = [5, 6, 7, 8, 1, 2, 3, 4]
-    # Case 1: crossover segment [2, 5] (positions 2–5 inclusive)
-    Operators.PMX(parent1, parent2)
-
-#testing
-def test_operators():
-    original_tour = [0, 1, 2, 3, 4, 5]
-    print("Original tour:", original_tour)
-
-    print("\nTesting Insert:")
-    for _ in range(5):
-        new_tour = Operators.Insert(original_tour)
-        print(new_tour)
-
-    print("\nTesting Swap:")
-    for _ in range(5):
-        new_tour = Operators.Swap(original_tour)
-        print(new_tour)
-
-    print("\nInversion Swap:")
-    for _ in range(5):
-        new_tour = Operators.Inversion(original_tour)
-        print(new_tour)
-
-if __name__ == "__main__":
-    # test_operators()
-    # Example parents
-    test_pmx()

@@ -16,7 +16,7 @@ class Algorithm:
         - Uses Order Crossover (OX) for crossover
         - Uses Inversion for mutation
         - Selection method: Tournament selection
-        - Replacement: Elitist (keep best individuals)
+        - Replacement:(μ + λ) selection)/elitism
         """
         tsp = tspFile
         #initialise population with given size
@@ -73,7 +73,7 @@ class Algorithm:
         - Uses Edge Recombination for crossover
         - Uses Insert mutation with 30% probability
         - Selection: Tournament selection
-        - Replacement: Elitist
+        - Replacement:(μ + λ) selection)/eltisims
         """
         tsp = tspFile
         pop = Population(population_size, tsp)

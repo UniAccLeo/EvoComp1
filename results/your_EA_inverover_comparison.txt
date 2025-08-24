@@ -1,0 +1,6 @@
+It was evident through results that our evolutionary algorithms performed much better than the inverover algorithm, 
+with the GA2 algorithm generating a 2x shorter route for shorter routes such as eil51 and up to 5-6x shorter routes 
+for longer routes such as lin105. The inverover algorithm also had a much higher standard deviation, 
+likely due to the random initialisation not producing many good routes and therefore taking more time before 
+the algorithm finds better routes and improves. This can be seen in the inverover_any_route.txt file which outperformed 
+our algorithms at the cost of computational power.

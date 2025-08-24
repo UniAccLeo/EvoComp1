@@ -23,7 +23,7 @@ def main():
                     best_route_cost = tsp.calculate_route_cost(best_route)
                     results.append(best_route_cost)
             except Exception as e:
-                print(f"Error reading TSP file: {e}")
+                print(f"Error reading TSP file: {e}")   
                 return
             
             mean = sum(results) / len(results)

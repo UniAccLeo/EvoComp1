@@ -1,19 +1,6 @@
-In creating an evolutionary algorithm, the pseudo code for an evolutionary algorithm is detailed below:
-
-1. initialise population with random candidate solutions;
-2. evaluate each candidate
-3. Repeat until Terminiation condition is satisfied do:
-4. 
-- select parents
-- Recombine pairs of parentsmutate the resulting offspring
-- evaluate new candidates
-- select individuals for the next generation
-
-For TSP
-
+For TSP design of the algorithm
 1. initialise population with random permutations of city indices (each perm = a tour) : 20, 50,100,200 (number of permutations)
 2. Evaluate each candidate solution by calculating the total tour length using city coordinates
-
 3. while( max generation -> 2000 for the exercise 6){
     1. select parents: two tours using tournamet selection, roulette wheel
     2. apply crossover on parent pairsas
@@ -27,5 +14,38 @@ For TSP
     2. steady-state replacement: insert offspring into the population by replacing some fo the worse individuals (this oneis better)
     e.g population 50: two parents have two children soo populuation = 52. pick the best 50 to survive and then repeat..... using a priotity queue
 }     
-
 4. pick the best tour in the final population.
+
+
+Genetic algorihtm (GA) design 1
+for my first genetic algorithm, I decided to use tournament selection for parent selection with a tournament size of 5 as 
+it works well with raw fitness values and preserves diversity, which is important in finding new better tours. 5 was chosen as it creates a decently high 
+selection pressure given the population sizes. I decided to implement order-crossover and inversion mutation combined together as it allows the algorihtm too exploit 
+the good solutions using crossover(maintains the good sequences - small change) while exploring new solutions using inversion, which is a drastic
+change to the tour. I used a generation replacement with strong elitism, again to maintain diversity, which would be important for when u run the 
+algorithm for many more generations. ( (μ + λ) selection)
+
+GA Design 2 
+For the second algorithm, I decided to change the crosover and mutation algorithm with ERX and insert mutation. 
+ERX mutation is a really good exploiter for graph problems and therefore needs a diverse range of parents to combine, so 
+using FPS which frequently picks the same winner/random winner is inefficient. Thus tournament parent selection is used instead.
+Insert mutation was used as it is medium to high level of exploratiuon which is sufficient in providing small incremental improvement. Perhaps 
+making it even better the longer the generations run. I'm using generational replacement as its sufficient compard to steady state where it replaces the 
+worst individual every team which means number of iterations would be much larger.
+
+GA design3:
+For this third algorithm I tried something a lot more different to 1 and 2. I decided to make a slower convergence using the fitness proportion selection 
+for the parents. Im using a cycle crossover and a swap mutation with the idea that cycle crossover keeps cities in their absolute positions from parents and swap mutation similarly 
+gently explores nearby arrangments of the tour. Unlike Design2 thisalgirihtm is less prone to premature convergence which means maints a higher dviersity throughout the run. 
+In terms of the replacement strategy, since its a lot slower, a generational replacement makes sense here as it allows the diversity maintained by FPS to persits 
+longer
+
+OutCome for testing:
+From the GA1, GA2, and GA3 test CSV files, you can see that GA2 consistently achieves lower (better) fitness values across almost all problem instances 
+and parameter settings. For smaller problems like eil51 and eil76, the differences are small, but for larger problems such as pcb442 and pr2392,
+the improvement is substantial. GA1 sometimes reaches good solutions quickly due to its simpler OX crossover and faster generation of two children
+per iteration, but it frequently gets trapped in local minima, leading to being stuck in later generations. GA3, while faster in computation, suffers 
+from poorer convergence because its heavy mutation strat often disrupts good partial solutions, resulting in higher final fitness values. 
+Overall, the CSV results support GA2’s design choice: although it has higher computational cost per generation due to its computation involves only creating 
+one child per generation which means double the computations of GA1 and GA3, its combination of Edge Recombination Crossover 
+and Insert mutation provides the best trade-off between convergence quality and robustness, especially for larger TSP instances.

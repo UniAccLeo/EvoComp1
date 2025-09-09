@@ -1,0 +1,36 @@
+Proof 1 - prove that Prove that Random Search needs with probability 1 − e−Ω(n) at least a budget of
+2n/2 fitness evaluations to reach an optimal search point for the function F1
+
+The function F1 is the OneMax function, which has a single optimal solution when all the bits are equal to 1.
+Random search generates a random solution each time, independently of the previous solution, and each bit has a 1/2 
+probability of being 1. 
+for a solution of length n, the chance that every bit is one is therefore 2^n, so any solution
+has chance 1/2^n of being the optimal. 
+We now find the probability that after 2^n/2 iterations the optimal solution is not found:
+P(not found) = (1-(1/2^n)) ^ 2^n/2
+We then use the inequality (1-1/m)^k ≈ e ^ −k/m for:
+P(not found) = e^((-2^n/2)/2^n) = e^-2^-n/2
+as n -> inf, -2^-n/2 -> 0
+then e^-2^-n/2 -> 1/e^0 -> 1
+as this evaluates to one, after the 2^n/2 iterations the chance that the optimal solution is NOT found is incredibly high, and therefore
+at least that mant iterations must be budgeted to find the optimal solution.
+
+
+Proof 2 - Prove that the number of fitness evaluations of RLS and (1+1) EA to reach an
+optimal search point for the function F3 is O(n log n) with probability Ω(1).
+Function three is a harmonic linear function where each xi has weighting x/i, x element of {0, 1}
+
+For RLS, this problem is the same as OneMax, since only one bit is being changed at a time,
+and any bit being 1 is better than being 0 as they are non-negative. 
+At any given point with k bits being 1, the probability that the algorithm would improve it 
+is (n-k)/n, which is the probability of choosing a 0 bit.
+E[k], the expected time of improving from k is therefore n(n-k)
+for every layer, this then becomes a sum of n/n + n/n-1 + n/n-2 ....... n
+this sumation is equal to n * (n/1 + n/2 ... + n/n) = n* logn therefore it has expected time of O(nlogn)
+
+for 1+1 EA, a similar approach is used. The key difference between the two functions is that 1+1 EA can 
+flip multiple bits. The chance that this happens converges to a constant 1-2e^-1 as n -> inf
+For the sake of the bound, we can ignore this case and assume these mutations will be equally good to bad on average.
+We then reduce it to the same problem as RLS, except the chance to flip one bit is e^-1, so the  
+expected time of improving from k is Ω( n(n-k) )
+The summation then just equates to O(nlogn) again. 

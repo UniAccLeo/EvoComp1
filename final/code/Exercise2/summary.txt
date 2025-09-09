@@ -1,0 +1,33 @@
+Problem 1:
+RLS and 1+1 were both able to find the optimal solution at 100 early on.
+whereas random search could not. RLS was able to do this slightly faster than 1+1.
+
+Problem 2:
+Once again, RLS and 1+1 were able to find the optimal solution, with RLS being faster, and random search
+was unable to find the best solution. Interestingly here we can see that random search found better solutions at
+lower iterations as the EAs were unable to observe useful patterns yet.
+
+Problem 3:
+Problem 3 presented the recurring pattern that the EAs were more competent at finding the best solution,
+whereas the random solution was once again unable to do so. This time though the EAs didn't even start off 
+at a disadvantage due to random starts, and this led them to perform exceptionally well against random search.
+RLS is also keeping its edge over 1+1 EA.
+
+Problem 18:
+In this problem, while the EAs still performed better than the random search, 1+1 EA was able
+to perform better than RLS. It can be observed that the rls algorithm reached a plateau at around 3.7,
+likely due to no single bit-switch being enough to make a meaningful enough change, showing off the strength 
+of the 1+1 algorithm for more potential exploration
+
+Problem 23:
+Problem 23 reverted back to the original trend of RLS performing slightly better than 1+1
+and both being able to find the optimal solution over random search.
+
+Problem 24:
+Problem 24 was another one which fit the trend, and once again showing how initially random search
+is able to outperform the other two algorithms through sheer luck, but is eventually overtaken
+
+Problem 25:
+To finish is off, Problem 25 showed the same trend as in 18, where despite getting an early lead,
+the RLS algorithm found a local plateau and got stuck, allowing the 1+1 algorithm to overtake it
+and find a more optimal solution at the end of the runs.

@@ -5,8 +5,6 @@ import numpy as np
 import heapq
 import random
 
-random_chance = 0.05
-
 def my_EA(fitness_function, population_size = 10, budget = 100000, n_runs = 10):
   if fitness_function.meta_data.problem_id == 18 and fitness_function.meta_data.n_variables == 32:
     optimum = 8

@@ -51,38 +51,47 @@ class MMAS:
             self.update(x_best)
 
         return f_best, x_best
+    
+def run_mmas(problem, n, rho, is_star, budget=100000, n_runs=10, name="MMAS", l=None):
+    """Run MMAS algorithm for multiple runs (all runs in same file)"""
+    for run in range(1, n_runs+1):
+        if l is not None:
+            l.start_run()       # start run in logger
+        problem.reset()          # reset problem counters
 
-def run_mmas(fitness_function, n, rho, is_star, budget=100000, n_runs=10):
-    """Run MMAS algorithm for multiple runs"""
-    for run in range(n_runs):
         obj = MMAS(n=n, rho=rho, is_star=is_star)
-        f_best, x_best = obj.run(fitness_function, budget=budget)
-        print(f"  Run {run+1}: Best fitness = {f_best}")
+        f_best, x_best = obj.run(problem, budget=budget)
+        print(f"  Run {run}: Best fitness = {f_best}")
+
+        if l is not None:
+            l.end_run()         # end run in logger
+
 
 problemIds = [1, 2, 3, 18, 23, 24, 25]
 
 for pid in problemIds:
     for rho in [1, 1/np.sqrt(100), 1/100]:
         for is_star in [False, True]:
-            name = "MMAS*" if is_star else "MMAS"
-            
+            name = "MMASstar" if is_star else "MMAS"
+
             problem = get_problem(
                 fid=pid,
                 dimension=100,
                 instance=1,
                 problem_class=ProblemClass.PBO
             )
-            
+
             l = logger.Analyzer(
                 root="data",
                 folder_name=f"Exercise4/problem_{pid}_{name}_rho_{rho:.4f}",
                 algorithm_info=f"Exercise 4 {name}, rho={rho:.4f}",
                 algorithm_name=name
             )
-            
             problem.attach_logger(l)
-            
+
             print(f"Running problem {pid}, {name}, rho={rho:.4f}")
-            run_mmas(problem, problem.meta_data.n_variables, rho, is_star, budget=100000, n_runs=10)
-            
-        del l
+            run_mmas(problem, problem.meta_data.n_variables, rho, is_star, budget=100000, n_runs=10, name=name)
+
+            problem.detach_logger()
+            del l
+            del problem

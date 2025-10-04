@@ -7,26 +7,34 @@ from ioh import logger
 
 class ACO:
     def __init__(self, n, n_ants=10, rho=0.1, q=1.0, local_search=True):
-        self.n = n
+        self.n = n 
         self.n_ants = n_ants
-        self.rho = rho            
-        self.q = q                
+        self.rho = rho  #Evaporation rate         
+        self.q = q      #Phermone intensity
+
+        #Initialise phermone values       
         self.tau = np.full(n, 0.5, dtype=float)  
         self.local_search = local_search
 
+        #Min and max phermone limits
         self.tau_min = 1.0 / (self.n * 10)
         self.tau_max = 1.0 - self.tau_min
 
-    def _prob_from_tau(self):
+    def prob_from_tau(self):
         return np.clip(self.tau, self.tau_min, self.tau_max)
 
+    #Construct a solution based on phermone prob
     def construct_solution(self):
-        probs = self._prob_from_tau()
+        probs = self.prob_from_tau()
+        #Randomly assign 1 if rand < tau_i
         return (np.random.rand(self.n) < probs).astype(np.int32)
 
+    #Local search to improve a solution 
     def local_search_improve(self, x, fitness_function):
         f_current = fitness_function(x)
         improved = True
+
+        #Loop until no improvement is found
         while improved:
             improved = False
             for i in range(self.n):
@@ -39,16 +47,23 @@ class ACO:
                     break  
         return x, f_current
 
+    #Update phermone levels based on best solution 
     def update_pheromones(self, x_best, f_best):
+        #Evaporation 
         self.tau = (1.0 - self.rho) * self.tau
+        
+        #Deposit
         increment = self.rho * self.q * f_best  
         self.tau += x_best.astype(float) * increment
+
+        #Apply phermone limits 
         self.tau = np.clip(self.tau, self.tau_min, self.tau_max)
 
     def run(self, fitness_function, budget=100000):
         f_best, x_best = -sys.maxsize, None
-        evals = 0
+        evals = 0 #No of evaluations 
 
+        #Continue until eval budget used 
         while evals < budget:
             solutions, fitnesses = [], []
 
@@ -59,18 +74,20 @@ class ACO:
                 solutions.append(sol)
                 fitnesses.append(f)
 
+                #Track global best solution 
                 if f > f_best:
                     f_best, x_best = f, sol.copy()
 
                 if evals >= budget:
                     break
-
+            #Local search on iteration bests solution 
             if self.local_search and evals < budget:
                 iter_best_idx = int(np.argmax(fitnesses))
                 sol_ls, f_ls = self.local_search_improve(solutions[iter_best_idx], fitness_function)
                 if f_ls > f_best:
                     f_best, x_best = f_ls, sol_ls
 
+            #Phermone update
             if x_best is not None:
                 self.update_pheromones(x_best, f_best)
 

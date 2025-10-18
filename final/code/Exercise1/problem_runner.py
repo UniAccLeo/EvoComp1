@@ -48,26 +48,21 @@ def one_plus_one(x, size):
       x_copy[s] = 1- x_copy[s]
   return x_copy
 
-problemIds = [1, 2, 3, 18, 23, 24, 25]
+problemIds = [2100, 2101,2102,2103,2200,2201,2202,2203,2300,2301,2302]
 for pid in problemIds: 
     for function in [random_search, rls, one_plus_one]:
-        problem = get_problem(
-            fid=pid,
-            dimension=100,
-            instance=1,
-            problem_class=ProblemClass.PBO
-        )
+        problem = get_problem(pid, problem_class=ProblemClass.GRAPH)
         l = logger.Analyzer(
         root="data",
-        folder_name=f"Exercise2/problem_{pid}_{function.__name__}",
-        algorithm_info="Exercise two",
+        folder_name=f"Exercise1/run/problem_{pid}_{function.__name__}",
+        algorithm_info="Exercise 1",
         algorithm_name=function.__name__
         )   
         problem.attach_logger(l)
         problem_runner(
             mutation_function=function,
             fitness_function=problem,
-            budget=100000,
-            n_runs=10
+            budget=10000,
+            n_runs=30
         )
     del l

@@ -51,23 +51,18 @@ def my_EA(fitness_function, population_size = 10, budget = 100000, n_runs = 10):
     fitness_function.reset()
   return f_opt, x_opt
 
-problemIds = [1, 2, 3, 18, 23, 24, 25]
-l = logger.Analyzer(
-root="data",
-folder_name="Exercise3/run",
-algorithm_info=f"beta: 1/n",
-algorithm_name="my_EA"
-)   
+problemIds = [2100, 2101,2102,2103,2200,2201,2202,2203,2300,2301,2302]
 for pid in problemIds: 
-  problem = get_problem(
-      fid=pid,
-      dimension=100,
-      instance=1,
-      problem_class=ProblemClass.PBO
-  )
+  l = logger.Analyzer(
+  root="data",
+  folder_name=f"Exercise1/run/problem_{pid}_myEA",
+  algorithm_info=f"Exercise 1",
+  algorithm_name="my_EA"
+  )   
+  problem = get_problem(pid, problem_class=ProblemClass.GRAPH)
   problem.attach_logger(l)
-  my_EA(fitness_function=problem, population_size=10, budget=100000, n_runs=10)
+  my_EA(fitness_function=problem, population_size=10, budget=10000, n_runs=30)
 
 del l
 
-#zip -r Ex3run-1.zip data/Exercise3/run-1
+# zip -r Ex3run-1.zip data/Exercise3/run-1

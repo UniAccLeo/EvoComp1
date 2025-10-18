@@ -66,7 +66,7 @@ def GSEMO(problem, budget=10000):
 
     return population
                     
-
+# --- Run GSEMO on all problem instances ---
 maxcoverage_ids = [2100, 2101, 2102, 2103]
 maxinfluence_ids = [2200, 2201, 2202, 2203]
 packwhile_ids = [2300, 2301, 2302]      
@@ -79,31 +79,39 @@ root_data_folder = "C:/Users/USER/Desktop/Evocomp/EvoComp1/data"
 for problem_id in all_problem_ids:
     print(f"Running GSEMO on problem {problem_id}...")
 
+    # create folder for this problem
     problem_folder = os.path.join(root_data_folder, f"Exercise2/Problem_{problem_id}")
     os.makedirs(problem_folder, exist_ok=True)
 
-    for run in range(n_runs):
-        # create fresh problem instance per run
-        problem = ioh.get_problem(problem_id, problem_class=ioh.ProblemClass.GRAPH)
+    # create a single analyzer for all runs
+    l = logger.Analyzer(
+        root=root_data_folder,
+        folder_name=f"Exercise2/Problem_{problem_id}",
+        algorithm_name=f"GSEMO_{problem_id}",
+        algorithm_info="GSEMO multiobjective",
+        store_positions=True  # saves decision vectors
+    )
 
-        # attach logger for IOHanalyzer (objective 1 logged)
-        problem.attach_logger(logger.Analyzer(
-            root=root_data_folder,
-            folder_name=f"Exercise2/Problem_{problem_id}",
-            algorithm_name=f"GSEMO_{problem_id}_run{run+1}",
-            algorithm_info="GSEMO multiobjective",
-            store_positions=True,  # ensures decision vectors are saved
-        ))
+    all_tradeoffs = []  # list to store all runs
+
+    for run in range(n_runs):
+        problem = ioh.get_problem(problem_id, problem_class=ioh.ProblemClass.GRAPH)
+        problem.attach_logger(l)
 
         # run GSEMO
         population = GSEMO(problem, budget=budget)
 
-        # manually save second objective (-cost) for trade-off analysis
-        tradeoff = [(fit[0], fit[1]) for _, fit in population]  # list of tuples (submodular_value, neg_cost)
-        df = pd.DataFrame(tradeoff, columns=["submodular_value", "neg_cost"])
-        tradeoff_file = os.path.join(problem_folder, f"GSEMO_{problem_id}_run{run+1}_tradeoff.csv")
-        df.to_csv(tradeoff_file, index=False)
+        # store trade-off with run number
+        tradeoff = [(fit[0], fit[1], run + 1) for _, fit in population]
+        all_tradeoffs.extend(tradeoff)
 
-        # flush logger to save IOHprofiler data
+        problem.reset()  # reset problem for next run
+
+    # save all runs in one CSV
+    df = pd.DataFrame(all_tradeoffs, columns=["submodular_value", "neg_cost", "run"])
+    tradeoff_file = os.path.join(problem_folder, f"GSEMO_{problem_id}_all_runs_tradeoff.csv")
+    df.to_csv(tradeoff_file, index=False)
+
+    del l  # flush logger
 
 print("All runs complete! Results are saved in the 'data' folder.")

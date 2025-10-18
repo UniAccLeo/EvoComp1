@@ -1,0 +1,11 @@
+From the plots produced for the single objective approaches, there are many conclusion we can draw about the algorithms and the
+problems themselves. For starters, it is important to note that all three evolutionary algorithms outperformed random search,
+showing how the mutations are indeed leading to a better solution. Furthermore, most often the 1+1 EA is able to produce the 
+best results, most likely due to its ability to make larger mutations sometimes which allows for more exploration. This is then 
+followed by my EA and then rls. Looking past the final results though, it can be seen that usually rls actually picks up a lead 
+earlier on, but is then caught up by the other algorithms as it reaches a plateau - likely as the result of reaching a local optima.
+This explains why in questions 22XX, where there was no plateau for rls, it managed to outperform both 1+1 EA and myEA convincingly.
+In terms of the problems themselves, this suggests that the 22XX problems value small changes, perhaps more often than not the value
+of a bit is not dependent on other bits (so a single flipped bit correctly causes an improvement), whereas the other problems have more
+interactions between bits, where only by flipping two or more bits simultaneously can it break past a local optima.
+

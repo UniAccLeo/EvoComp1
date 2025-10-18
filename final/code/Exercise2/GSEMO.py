@@ -1,7 +1,8 @@
 import ioh
 import random 
-
-f = ioh.get_problem(2100, problem_class=ioh.ProblemClass.GRAPH)
+from ioh import logger
+import os          # for folder creation and file paths
+import pandas as pd # for saving trade-off CSVs
 
 def fitness(x, problem):
     """
@@ -16,9 +17,9 @@ def fitness(x, problem):
 
 def GSEMO(problem, budget=10000):
     #choose x uniformly at random
-    num_variables = problem.n_variables
+    num_variables = problem.meta_data.n_variables
     x = [0]*num_variables
-    for i in range(0, num_variables-1):
+    for i in range(num_variables):
         choice = random.randint(0,1)
         x[i] = choice
 
@@ -27,8 +28,82 @@ def GSEMO(problem, budget=10000):
     
     #define population
     population = [(x, g_x)]
-    
 
-    
+    #run loop
+    num_eval = 1
+    while num_eval < budget:
+        parent, parent_fit = random.choice(population)
+        #mutation
+        n = len(parent)
+        child = parent.copy()
+        for i in range(n):
+            if(random.random() < 1/n):
+                child[i] = 1 - child[i] #flip the bit either 0 to 1 or 1 - 0
+        child_fitness = fitness(child, problem)
+        num_eval += 1
+        f_value = child_fitness[0]
+        neg_cost = child_fitness[1]
+        #for multi objective optimisation, A dominates B if
+        #1) A is no worse in all objectives
+        #2) A is strictly better in at least one objective
+        isDominate = False
         
-    
+        for pop, pop_fitness in population:
+            fpop_value, popneg_cost = pop_fitness
+            if(fpop_value >= f_value and popneg_cost >= neg_cost) and (fpop_value > f_value or popneg_cost > neg_cost): 
+                isDominate = True
+                break
+        if(not isDominate):
+            new_population = []
+            #iterate population vector and for all fitness values that are less
+            for pop in population:
+                z, g_z = pop
+                zpop_value, zpopneg_cost = g_z
+                if not (f_value >= zpop_value and neg_cost >= zpopneg_cost and (f_value > zpop_value or neg_cost > zpopneg_cost)):
+                    new_population.append(pop)
+            new_population.append((child, child_fitness))   
+            population = new_population
+
+    return population
+                    
+
+maxcoverage_ids = [2100, 2101, 2102, 2103]
+maxinfluence_ids = [2200, 2201, 2202, 2203]
+packwhile_ids = [2300, 2301, 2302]      
+all_problem_ids = maxcoverage_ids + maxinfluence_ids + packwhile_ids
+
+n_runs = 30
+budget = 10000
+root_data_folder = "C:/Users/USER/Desktop/Evocomp/EvoComp1/data"
+
+for problem_id in all_problem_ids:
+    print(f"Running GSEMO on problem {problem_id}...")
+
+    problem_folder = os.path.join(root_data_folder, f"Exercise2/Problem_{problem_id}")
+    os.makedirs(problem_folder, exist_ok=True)
+
+    for run in range(n_runs):
+        # create fresh problem instance per run
+        problem = ioh.get_problem(problem_id, problem_class=ioh.ProblemClass.GRAPH)
+
+        # attach logger for IOHanalyzer (objective 1 logged)
+        problem.attach_logger(logger.Analyzer(
+            root=root_data_folder,
+            folder_name=f"Exercise2/Problem_{problem_id}",
+            algorithm_name=f"GSEMO_{problem_id}_run{run+1}",
+            algorithm_info="GSEMO multiobjective",
+            store_positions=True,  # ensures decision vectors are saved
+        ))
+
+        # run GSEMO
+        population = GSEMO(problem, budget=budget)
+
+        # manually save second objective (-cost) for trade-off analysis
+        tradeoff = [(fit[0], fit[1]) for _, fit in population]  # list of tuples (submodular_value, neg_cost)
+        df = pd.DataFrame(tradeoff, columns=["submodular_value", "neg_cost"])
+        tradeoff_file = os.path.join(problem_folder, f"GSEMO_{problem_id}_run{run+1}_tradeoff.csv")
+        df.to_csv(tradeoff_file, index=False)
+
+        # flush logger to save IOHprofiler data
+
+print("All runs complete! Results are saved in the 'data' folder.")

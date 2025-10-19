@@ -1,8 +1,8 @@
 import ioh
 import random 
 from ioh import logger
-import os          # for folder creation and file paths
-import pandas as pd # for saving trade-off CSVs
+import os          
+import pandas as pd 
 
 def fitness(x, problem):
     """

@@ -1,0 +1,33 @@
+1. Looking at MaxCoverage first, for all 5 instances, All algorithms follow the same path in f(x) vs evaluations with a gradual increase.
+Then there is a sudden explosion after 1e+3 where the GSEMO algorihtm suddenly finds much better solutions causing the line to almost become
+vertical (just like all the other algorithms). It follows a very simialr shape to (1+1)EA like because of how it works is very similar to what
+GSEMO does. More specifically, the mutation step where you mutate each bit indepdently withprobability 1/n is very similar to GSEMO except GSEMO
+keeps a population instead of just one. However, GSEMO outperforms all the algorithms for instances 2100,2101,2102 and 2103 finding a better f(x) 
+value. A reason for why GSEMO does so well for max coverage is that submodular functions have a population advantage. Since GSEMO keeps all of the
+non dominated solutions, it can retain multiple of the promising combinations and thus allows for exploration of multiple paths through the space 
+space, possibly increasing the chance of obtaining a high-coverage combination. This is contrasting to (1+1) EA for example which only has one 
+solution path. For the Maxcoverage trade-off Graph, the shape is a nearly linear decrease with a moderate number of points. The front is smooth 
+because MaxCoverage is a submodular problem, each additional node contributes less than oe equal to the previous one which means you would except a
+linear relationship.
+
+2. the next type of problem is MaxInfluence. The idea of MaxInfluence is that you have to select a set of nodes to maximise the total number of
+influenced nodes. From the Maxinfluence graphs you can can see that GSEMO peforms much worse than RLS and just like Maxcoverage (-500 vs -100), follows a very similar
+curve not surpassing it. An explanation as to  why a populatiom advantage is less useful here is that Maxinfluence is less submodular. RLS works by making 
+small changes such as mutating one node. For this problem, a small incremental change is more useful because flipping a single node can create a large
+increase in influence especially in a complicated network. This would likely result in RLS outperforming GSEMO which doesnt really improve the best coverage. 
+For Maxinfluence, the shape is esentially a single point.This is because most solutions are dominated by a single optimal solution so the pareto front collapses. As
+mentioned before, some nodes contribute a lot to the influence, and others dont meaning small changes matter a lot. If there is one really good solution that
+achieves maximum infleunce, almost all the new solutions will be dominated and therefore cannot stay in the population. As a result, the population pool does not
+change much and the trade-off graph shows only one main point.
+
+3. The last type of problem is the packwhileTravel problem. For problem 2300 and 2301, There is a slow increase and GSEMO behaves somewhat like (1+1)EA, however
+as discussed previously converges later, as popiulation exploratoin slows down focus. The final solution is also worse than (1+1)EA. The best solution so far is 
+worse than RLS and "my_EA". 2302 is interesting as this is where GSEMO performs extremely poor; worse than all algorithms with the curve increasing extremely slowly.
+This can be justified about how packwhiletravel problem works. This problem involves choosing items with values under a capacity limit and then a travelling component
+where items are located along a path. This makes this problem highly sequential meaning picking one item will affect what comes next. This is suitable for (1+1)EA and RLS which
+focus on one single solution and improves sequentially, which is justified by the graph of 2302 with (1+1)EA performing the best. The population diviersity which is GSEMO's strength
+is not effective here as it explores too many partial solutions tyhat cannot combine into a rewarding path. The trade-off graph is very dense, with many points 
+representing the final population of nondoiminated solutions. This occurs as there are numerous combinations of items that have similar submodular values and costs. The density 
+shows how the probkem is highly combinatorial as the selection can alter the costs without dominating the other solutions within the population. 
+
+

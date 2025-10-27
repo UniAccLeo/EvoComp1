@@ -65,4 +65,4 @@ for pid in problemIds:
 
 del l
 
-# zip -r Ex3run-1.zip data/Exercise3/run-1
+# zip -r Ex3run-1.zip data/Exercise4/run-1

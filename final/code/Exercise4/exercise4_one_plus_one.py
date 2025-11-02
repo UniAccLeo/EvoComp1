@@ -1,32 +1,69 @@
-from ioh import get_problem, ProblemClass, logger
-import os
+from ioh import get_problem, ProblemClass
+from ioh import logger
 import sys
 import numpy as np
-from final.code.Exercise1.problem_runner import problem_runner, one_plus_one
 
-problem_ids = [2100, 2101, 2102, 2103, 2200, 2201, 2202, 2203] 
-root_data_folder = "C:/Users/USER/Desktop/Evocomp/EvoComp1/data"
-n_runs = 30
-budget = 100000
+def problem_runner(mutation_function, fitness_function, budget = None, n_runs = 10):
+  if budget is None:
+      budget = int(fitness_function.meta_data.n_variables * fitness_function.meta_data.n_variables * 50)
 
-for pid in problem_ids:
-    print(f"\nRunning One-Plus-One on problem {pid}")
-    problem = get_problem(pid, problem_class=ProblemClass.GRAPH)
-    
-    l = logger.Analyzer(
-        root=root_data_folder,
-        folder_name=f"Exercise4/Problem_{pid}_one_plus_one",
+  if fitness_function.meta_data.problem_id == 18 and fitness_function.meta_data.n_variables == 32:
+      optimum = 8
+  else:
+      optimum = fitness_function.optimum.y
+  print(optimum)
+  for r in range(n_runs):
+    f_opt = sys.float_info.min
+    x_opt = None
+    x = np.random.randint(2, size=fitness_function.meta_data.n_variables)
+    f = fitness_function(x)
+    for i in range(budget):
+      print(f"{i} : {r}")
+      x_new = mutation_function(x, fitness_function.meta_data.n_variables)
+      f_new = fitness_function(x_new)
+      if f_new > f :
+        f = f_new
+        x = x_new
+        if f > f_opt:
+          f_opt = f
+          x_opt = x
+        if f_opt >= optimum:
+          break
+    fitness_function.reset()
+  return f_opt, x_opt
+
+def random_search(x, size):
+  return np.random.randint(2, size=size)
+
+def rls(x, size):
+  x_copy = x.copy()
+  flip_idx = np.random.randint(size)
+  x_copy[flip_idx] = 1 - x_copy[flip_idx]
+  return x_copy
+
+def one_plus_one(x, size):
+  flip_chance = float(1/size)
+  x_copy = x.copy()
+  for s in range(size):
+    if(np.random.rand() < flip_chance):
+      x_copy[s] = 1- x_copy[s]
+  return x_copy
+
+problemIds = [2201, 2202,2203]
+for pid in problemIds: 
+    for function in [one_plus_one]:
+        problem = get_problem(pid, problem_class=ProblemClass.GRAPH)
+        l = logger.Analyzer(
+        root="data",
+        folder_name=f"Exercise4/problem_{pid}_{function.__name__}",
         algorithm_info="Exercise 4",
-        algorithm_name="one_plus_one"
-    )
-    problem.attach_logger(l)
-
-    problem_runner(
-        mutation_function=one_plus_one,
-        fitness_function=problem,
-        budget=budget,
-        n_runs=n_runs
-    )
-
-    problem.detach_logger()
+        algorithm_name=function.__name__
+        )   
+        problem.attach_logger(l)
+        problem_runner(
+            mutation_function=function,
+            fitness_function=problem,
+            budget=100000,
+            n_runs=30
+        )
     del l

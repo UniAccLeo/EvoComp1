@@ -4,7 +4,7 @@ import sys
 import numpy as np
 from final.code.Exercise1.problem_runner import problem_runner, rls
 
-problem_ids = [2100, 2101, 2102, 2103, 2200, 2201, 2202, 2203] 
+problem_ids = [2202, 2203] 
 root_data_folder = "C:/Users/USER/Desktop/Evocomp/EvoComp1/data"
 n_runs = 30
 budget = 100000

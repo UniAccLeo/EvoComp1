@@ -69,7 +69,7 @@ def GSEMO(problem, budget=10000):
     return population
                     
 # --- Run GSEMO on all problem instances ---    
-all_problem_ids = [2200, 2201,2202,2203]
+all_problem_ids = [2202,2203]
 n_runs = 30
 budget = 100000
 root_data_folder = "C:/Users/USER/Desktop/Evocomp/EvoComp1/data"

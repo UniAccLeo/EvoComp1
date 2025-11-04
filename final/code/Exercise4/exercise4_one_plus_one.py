@@ -18,7 +18,8 @@ def problem_runner(mutation_function, fitness_function, budget = None, n_runs = 
     x = np.random.randint(2, size=fitness_function.meta_data.n_variables)
     f = fitness_function(x)
     for i in range(budget):
-      print(f"{i} : {r}")
+      if i%10000 == 0:
+        print(f"{i} : {r}")
       x_new = mutation_function(x, fitness_function.meta_data.n_variables)
       f_new = fitness_function(x_new)
       if f_new > f :
@@ -49,9 +50,9 @@ def one_plus_one(x, size):
       x_copy[s] = 1- x_copy[s]
   return x_copy
 
-problemIds = [2201, 2202,2203]
+problemIds =[2202,2203]
 for pid in problemIds: 
-    for function in [one_plus_one]:
+    for function in [rls]:
         problem = get_problem(pid, problem_class=ProblemClass.GRAPH)
         l = logger.Analyzer(
         root="data",

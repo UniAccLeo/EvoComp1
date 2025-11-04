@@ -1,0 +1,38 @@
+Exercise 3 – Design choices
+
+Scope
+We target MaxCoverage and MaxInfluence instances (IDs 2100–2103, 2200–2203) with a uniform constraint using two evolutionary algorithms:
+- population-based single-objective EA (SOEA) with repair and diversity mechanisms. 
+- population-based multi-objective EA (MOEA) based on NSGA‑II acting on (value, -cost) objectives.
+Each algorithm is evaluated for population sizes 10, 20, 50, with 30 independent runs and a budget of 10,000 fitness evaluations per run.
+
+Single-Objective EA (SOEA)
+Representation. Bitstring over items/nodes.  
+Fitness. IOH's submodular objective; negative values indicate infeasibility (cost limit violated). Infeasible offspring are repaired until feasible.
+
+Repair operator 
+We use marginal-drop repair only: repeatedly remove the 1‑bit with the smallest marginal contribution (re-evaluating after flipping it to 0) until the solution becomes feasible. This respects the submodular structure and preserves high-value elements.  
+Random-drop repair was tested initially for comparison but omitted from the final experiments after observing weaker performance.
+
+Variation. Bit-flip mutation with rate 1/n.  
+Diversity. Deterministic crowding (offspring competes with the more similar parent by Hamming distance) plus a mild fitness-sharing step that replaces the most crowded individual with a random immigrant when not worse.  
+Selection/Survival. Pairwise deterministic crowding plus diversity replacement ensures exploration and prevents premature convergence.
+Rationale. Submodular objectives reward good marginal gains; marginal-drop repair directly uses this insight to maintain feasibility with minimal value loss. It also provides a consistent baseline for fair comparison across population sizes and problem types.
+
+Multi‑Objective EA (MOEA)
+We optimise (value, −cost) using a simplified NSGA‑II pipeline:
+- Fast non‑dominated sorting for rank assignment.
+- Crowding distance for within-front diversity.
+- Tournament selection by (rank, crowding).
+- Bit‑flip mutation only (no crossover).
+- Environmental selection to maintain the target population size.
+
+This MOEA complements Exercise 2’s GSEMO by exploring the Pareto front with a larger population and stronger diversity pressure.
+
+Budget Accounting
+All fitness calls go through the IOH problem(x) oracle so the evaluation counter inside IOH controls the total budget.  
+Repairs that compute marginal contributions intentionally consume additional evaluations, trading computational cost for better-quality feasible solutions.
+
+Generative AI Use & Process Disclosure
+We used a generative AI to brainstorm design variants and to draft boilerplate for runner and plotting scripts.
+All algorithmic logic, parameters, and IOH integration were implemented, tested, and verified by us.
